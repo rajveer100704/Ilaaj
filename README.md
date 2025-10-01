@@ -20,7 +20,13 @@ IlaaJ is an AI-powered doctor assistant that helps you detect diseases based on 
 | Prompt Engineering  | Techniques for crafting effective prompts for AI models. |
 | AI/ML | To power the disease detection based on symptoms.         |
 
+## Screenshots
+<img width="1916" height="907" alt="Screenshot 2025-10-01 062604" src="https://github.com/user-attachments/assets/1b1bc3f3-ae02-45f7-a12b-fa547178b0bb" />
+<img width="1873" height="883" alt="Screenshot 2025-10-01 062733" src="https://github.com/user-attachments/assets/7e6f07ae-52f7-4e00-9f0e-564808f2977f" />
+
+
 ## Installation
+
 
 1. **Clone the repository:**
 ```
