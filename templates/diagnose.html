@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Single Input Form (from index.html) -->
+<form action="/diagnose" method="POST" class="diagnosis-form">
+    <div class="form-group">
+        <label for="symptom">Enter Symptoms (comma separated):</label>
+        <input type="text" id="symptom" name="Symptom" value="{{ symptoms_input }}"
+            placeholder="e.g., fever, cough, shortness of breath">
+        <input type="submit" value="Diagnose">
+    </div>
+</form>
+
+<!-- Diagnosis Results -->
+{% if diseases %}
+<h2>Matching Diseases:</h2>
+<ul class="disease-list">
+    {% for disease in diseases %}
+    <li>{{ disease }}
+        <form action="/remedies" method="POST" class="remedies-form">
+            <input type="hidden" name="Disease" value="{{ disease }}">
+            <button type="submit" class="remedies-button">Get Remedies</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No matching diseases found.</p>
+{% endif %}
+{% endblock content %}

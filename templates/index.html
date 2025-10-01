@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Single Input Form -->
+<form action="/diagnose" method="POST" class="diagnosis-form">
+    <div class="form-group">
+        <label for="symptom">Enter Symptoms (comma separated):</label>
+        <input type="text" id="symptom" name="Symptom" placeholder="e.g., fever, cough, shortness of breath">
+        <input type="submit" value="Diagnose">
+    </div>
+</form>
+{% endblock content %}

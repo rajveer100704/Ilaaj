@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Single Input Form -->
+<form action="/diagnose" method="POST" class="diagnosis-form">
+    <div class="form-group">
+        <label for="symptom">Enter Symptoms (comma separated):</label>
+        <input type="text" id="symptom" name="Symptom" placeholder="e.g., fever, cough, shortness of breath">
+        <input type="submit" value="Diagnose">
+    </div>
+</form>
+
+<!-- Diagnosis Results -->
+{% if selected_disease %}
+    <h2>Diagnosis Result:</h2>
+    <ul class="disease-list">
+        <li>{{ selected_disease }}
+            <form action="/remedies" method="POST" class="remedies-form">
+                <input type="hidden" name="Disease" value="{{ selected_disease }}">
+                <button type="submit" class="remedies-button">Get Remedies</button>
+            </form>
+        </li>
+    </ul>
+{% endif %}
+
+<!-- Remedies Result -->
+{% if remedies %}
+    <h2>Remedies for {{ selected_disease }}:</h2>
+    <div class="remedies-list">
+        {{ remedies|safe }}
+    </div>
+{% else %}
+    <p>No remedies found.</p>
+{% endif %}
+{% endblock content %}

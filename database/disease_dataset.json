@@ -1,0 +1,2306 @@
+[
+    {
+        "Disease": "COVID-19",
+        "Symptom": [
+            "fever",
+            "cough",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Flu",
+        "Symptom": [
+            "fever",
+            "cough",
+            "body aches"
+        ]
+    },
+    {
+        "Disease": "Common Cold",
+        "Symptom": [
+            "sneezing",
+            "runny nose",
+            "sore throat"
+        ]
+    },
+    {
+        "Disease": "Diabetes",
+        "Symptom": [
+            "increased thirst",
+            "frequent urination",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Hypertension",
+        "Symptom": [
+            "headache",
+            "dizziness",
+            "blurred vision"
+        ]
+    },
+    {
+        "Disease": "Asthma",
+        "Symptom": [
+            "wheezing",
+            "coughing",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Migraine",
+        "Symptom": [
+            "throbbing pain",
+            "nausea",
+            "sensitivity to light"
+        ]
+    },
+    {
+        "Disease": "Measles",
+        "Symptom": [
+            "rash",
+            "fever",
+            "cough"
+        ]
+    },
+    {
+        "Disease": "Mumps",
+        "Symptom": [
+            "swollen glands",
+            "fever",
+            "headache"
+        ]
+    },
+    {
+        "Disease": "Tuberculosis",
+        "Symptom": [
+            "coughing blood",
+            "night sweats",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "HIV/AIDS",
+        "Symptom": [
+            "fever",
+            "swollen lymph nodes",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Malaria",
+        "Symptom": [
+            "fever",
+            "chills",
+            "sweats"
+        ]
+    },
+    {
+        "Disease": "Lyme Disease",
+        "Symptom": [
+            "bull's-eye rash",
+            "fatigue",
+            "joint pain"
+        ]
+    },
+    {
+        "Disease": "Hepatitis B",
+        "Symptom": [
+            "jaundice",
+            "fatigue",
+            "abdominal pain"
+        ]
+    },
+    {
+        "Disease": "Pneumonia",
+        "Symptom": [
+            "cough",
+            "fever",
+            "difficulty breathing"
+        ]
+    },
+    {
+        "Disease": "Bronchitis",
+        "Symptom": [
+            "cough",
+            "mucus production",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "COPD",
+        "Symptom": [
+            "shortness of breath",
+            "wheezing",
+            "chronic cough"
+        ]
+    },
+    {
+        "Disease": "Anemia",
+        "Symptom": [
+            "fatigue",
+            "pale skin",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Celiac Disease",
+        "Symptom": [
+            "diarrhea",
+            "bloating",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "IBS",
+        "Symptom": [
+            "abdominal pain",
+            "bloating",
+            "diarrhea"
+        ]
+    },
+    {
+        "Disease": "Crohn's Disease",
+        "Symptom": [
+            "abdominal pain",
+            "diarrhea",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "Parkinson's Disease",
+        "Symptom": [
+            "tremor",
+            "stiff muscles",
+            "balance problems"
+        ]
+    },
+    {
+        "Disease": "Alzheimer's Disease",
+        "Symptom": [
+            "memory loss",
+            "confusion",
+            "difficulty with tasks"
+        ]
+    },
+    {
+        "Disease": "Epilepsy",
+        "Symptom": [
+            "seizures",
+            "confusion",
+            "loss of consciousness"
+        ]
+    },
+    {
+        "Disease": "Multiple Sclerosis",
+        "Symptom": [
+            "fatigue",
+            "numbness",
+            "vision problems"
+        ]
+    },
+    {
+        "Disease": "Rheumatoid Arthritis",
+        "Symptom": [
+            "joint pain",
+            "swelling",
+            "stiffness"
+        ]
+    },
+    {
+        "Disease": "Osteoarthritis",
+        "Symptom": [
+            "joint pain",
+            "stiffness",
+            "swelling"
+        ]
+    },
+    {
+        "Disease": "Lupus",
+        "Symptom": [
+            "fatigue",
+            "joint pain",
+            "rash"
+        ]
+    },
+    {
+        "Disease": "Psoriasis",
+        "Symptom": [
+            "red patches",
+            "scaly skin",
+            "itching"
+        ]
+    },
+    {
+        "Disease": "Eczema",
+        "Symptom": [
+            "itching",
+            "red rash",
+            "dry skin"
+        ]
+    },
+    {
+        "Disease": "Rosacea",
+        "Symptom": [
+            "facial redness",
+            "visible blood vessels",
+            "swollen bumps"
+        ]
+    },
+    {
+        "Disease": "Acne",
+        "Symptom": [
+            "pimples",
+            "blackheads",
+            "whiteheads"
+        ]
+    },
+    {
+        "Disease": "Gout",
+        "Symptom": [
+            "joint pain",
+            "swelling",
+            "redness"
+        ]
+    },
+    {
+        "Disease": "Hyperthyroidism",
+        "Symptom": [
+            "weight loss",
+            "rapid heartbeat",
+            "nervousness"
+        ]
+    },
+    {
+        "Disease": "Hypothyroidism",
+        "Symptom": [
+            "weight gain",
+            "fatigue",
+            "cold intolerance"
+        ]
+    },
+    {
+        "Disease": "Polycystic Ovary Syndrome",
+        "Symptom": [
+            "irregular periods",
+            "weight gain",
+            "hair loss"
+        ]
+    },
+    {
+        "Disease": "Endometriosis",
+        "Symptom": [
+            "pelvic pain",
+            "heavy periods",
+            "infertility"
+        ]
+    },
+    {
+        "Disease": "Fibroids",
+        "Symptom": [
+            "heavy bleeding",
+            "pelvic pain",
+            "frequent urination"
+        ]
+    },
+    {
+        "Disease": "Ovarian Cancer",
+        "Symptom": [
+            "abdominal bloating",
+            "pelvic pain",
+            "frequent urination"
+        ]
+    },
+    {
+        "Disease": "Breast Cancer",
+        "Symptom": [
+            "lump in the breast",
+            "change in breast shape",
+            "nipple discharge"
+        ]
+    },
+    {
+        "Disease": "Prostate Cancer",
+        "Symptom": [
+            "difficulty urinating",
+            "blood in urine",
+            "pelvic discomfort"
+        ]
+    },
+    {
+        "Disease": "Lung Cancer",
+        "Symptom": [
+            "persistent cough",
+            "chest pain",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Colon Cancer",
+        "Symptom": [
+            "blood in stool",
+            "change in bowel habits",
+            "abdominal pain"
+        ]
+    },
+    {
+        "Disease": "Skin Cancer",
+        "Symptom": [
+            "new mole",
+            "change in mole appearance",
+            "itching"
+        ]
+    },
+    {
+        "Disease": "Leukemia",
+        "Symptom": [
+            "fatigue",
+            "frequent infections",
+            "easy bruising"
+        ]
+    },
+    {
+        "Disease": "Lymphoma",
+        "Symptom": [
+            "swollen lymph nodes",
+            "fatigue",
+            "night sweats"
+        ]
+    },
+    {
+        "Disease": "Pancreatic Cancer",
+        "Symptom": [
+            "abdominal pain",
+            "weight loss",
+            "jaundice"
+        ]
+    },
+    {
+        "Disease": "Kidney Cancer",
+        "Symptom": [
+            "blood in urine",
+            "back pain",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "Bladder Cancer",
+        "Symptom": [
+            "blood in urine",
+            "frequent urination",
+            "pelvic pain"
+        ]
+    },
+    {
+        "Disease": "Throat Cancer",
+        "Symptom": [
+            "sore throat",
+            "hoarseness",
+            "difficulty swallowing"
+        ]
+    },
+    {
+        "Disease": "Stomach Cancer",
+        "Symptom": [
+            "abdominal pain",
+            "nausea",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "Esophageal Cancer",
+        "Symptom": [
+            "difficulty swallowing",
+            "chest pain",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "Brain Tumor",
+        "Symptom": [
+            "headaches",
+            "seizures",
+            "vision problems"
+        ]
+    },
+    {
+        "Disease": "Stroke",
+        "Symptom": [
+            "sudden numbness",
+            "confusion",
+            "trouble speaking"
+        ]
+    },
+    {
+        "Disease": "Heart Attack",
+        "Symptom": [
+            "chest pain",
+            "shortness of breath",
+            "nausea"
+        ]
+    },
+    {
+        "Disease": "Atherosclerosis",
+        "Symptom": [
+            "chest pain",
+            "shortness of breath",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Heart Failure",
+        "Symptom": [
+            "shortness of breath",
+            "fatigue",
+            "swelling in legs"
+        ]
+    },
+    {
+        "Disease": "Arrhythmia",
+        "Symptom": [
+            "irregular heartbeat",
+            "dizziness",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Peripheral Artery Disease",
+        "Symptom": [
+            "leg pain",
+            "numbness",
+            "weakness"
+        ]
+    },
+    {
+        "Disease": "Deep Vein Thrombosis",
+        "Symptom": [
+            "swelling",
+            "leg pain",
+            "redness"
+        ]
+    },
+    {
+        "Disease": "Pulmonary Embolism",
+        "Symptom": [
+            "shortness of breath",
+            "chest pain",
+            "cough"
+        ]
+    },
+    {
+        "Disease": "Varicose Veins",
+        "Symptom": [
+            "swollen veins",
+            "aching legs",
+            "itching"
+        ]
+    },
+    {
+        "Disease": "Hemophilia",
+        "Symptom": [
+            "excessive bleeding",
+            "easy bruising",
+            "joint pain"
+        ]
+    },
+    {
+        "Disease": "Thalassemia",
+        "Symptom": [
+            "fatigue",
+            "weakness",
+            "pale skin"
+        ]
+    },
+    {
+        "Disease": "Sickle Cell Anemia",
+        "Symptom": [
+            "pain episodes",
+            "fatigue",
+            "swelling in hands and feet"
+        ]
+    },
+    {
+        "Disease": "Hemochromatosis",
+        "Symptom": [
+            "fatigue",
+            "joint pain",
+            "abdominal pain"
+        ]
+    },
+    {
+        "Disease": "Cystic Fibrosis",
+        "Symptom": [
+            "chronic cough",
+            "lung infections",
+            "poor growth"
+        ]
+    },
+    {
+        "Disease": "Marfan Syndrome",
+        "Symptom": [
+            "tall stature",
+            "long limbs",
+            "heart problems"
+        ]
+    },
+    {
+        "Disease": "ALS",
+        "Symptom": [
+            "muscle weakness",
+            "difficulty speaking",
+            "difficulty breathing"
+        ]
+    },
+    {
+        "Disease": "Huntington's Disease",
+        "Symptom": [
+            "movement problems",
+            "cognitive decline",
+            "mood changes"
+        ]
+    },
+    {
+        "Disease": "Cerebral Palsy",
+        "Symptom": [
+            "movement problems",
+            "coordination issues",
+            "muscle stiffness"
+        ]
+    },
+    {
+        "Disease": "Down Syndrome",
+        "Symptom": [
+            "distinct facial appearance",
+            "developmental delays",
+            "intellectual disability"
+        ]
+    },
+    {
+        "Disease": "Autism Spectrum Disorder",
+        "Symptom": [
+            "social challenges",
+            "communication issues",
+            "repetitive behaviors"
+        ]
+    },
+    {
+        "Disease": "ADHD",
+        "Symptom": [
+            "inattention",
+            "hyperactivity",
+            "impulsivity"
+        ]
+    },
+    {
+        "Disease": "Bipolar Disorder",
+        "Symptom": [
+            "mood swings",
+            "depression",
+            "mania"
+        ]
+    },
+    {
+        "Disease": "Schizophrenia",
+        "Symptom": [
+            "hallucinations",
+            "delusions",
+            "disorganized thinking"
+        ]
+    },
+    {
+        "Disease": "Depression",
+        "Symptom": [
+            "persistent sadness",
+            "loss of interest",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Anxiety Disorder",
+        "Symptom": [
+            "excessive worry",
+            "restlessness",
+            "muscle tension"
+        ]
+    },
+    {
+        "Disease": "PTSD",
+        "Symptom": [
+            "flashbacks",
+            "nightmares",
+            "severe anxiety"
+        ]
+    },
+    {
+        "Disease": "OCD",
+        "Symptom": [
+            "obsessions",
+            "compulsions",
+            "anxiety"
+        ]
+    },
+    {
+        "Disease": "Borderline Personality Disorder",
+        "Symptom": [
+            "mood instability",
+            "fear of abandonment",
+            "impulsive behavior"
+        ]
+    },
+    {
+        "Disease": "Eating Disorder",
+        "Symptom": [
+            "preoccupation with weight",
+            "distorted body image",
+            "extreme eating behaviors"
+        ]
+    },
+    {
+        "Disease": "Substance Use Disorder",
+        "Symptom": [
+            "craving",
+            "loss of control",
+            "withdrawal symptoms"
+        ]
+    },
+    {
+        "Disease": "Alcoholism",
+        "Symptom": [
+            "craving",
+            "loss of control",
+            "withdrawal symptoms"
+        ]
+    },
+    {
+        "Disease": "Nicotine Dependence",
+        "Symptom": [
+            "craving",
+            "inability to stop smoking",
+            "withdrawal symptoms"
+        ]
+    },
+    {
+        "Disease": "Obesity",
+        "Symptom": [
+            "excessive body fat",
+            "shortness of breath",
+            "joint pain"
+        ]
+    },
+    {
+        "Disease": "Metabolic Syndrome",
+        "Symptom": [
+            "high blood pressure",
+            "high blood sugar",
+            "abdominal obesity"
+        ]
+    },
+    {
+        "Disease": "Gastritis",
+        "Symptom": [
+            "stomach pain",
+            "nausea",
+            "bloating"
+        ]
+    },
+    {
+        "Disease": "Peptic Ulcer",
+        "Symptom": [
+            "stomach pain",
+            "nausea",
+            "bloating"
+        ]
+    },
+    {
+        "Disease": "Gastroenteritis",
+        "Symptom": [
+            "diarrhea",
+            "nausea",
+            "stomach pain"
+        ]
+    },
+    {
+        "Disease": "GERD",
+        "Symptom": [
+            "heartburn",
+            "regurgitation",
+            "chest pain"
+        ]
+    },
+    {
+        "Disease": "Appendicitis",
+        "Symptom": [
+            "abdominal pain",
+            "nausea",
+            "fever"
+        ]
+    },
+    {
+        "Disease": "Gallstones",
+        "Symptom": [
+            "abdominal pain",
+            "nausea",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Hepatitis C",
+        "Symptom": [
+            "fatigue",
+            "jaundice",
+            "abdominal pain"
+        ]
+    },
+    {
+        "Disease": "Cirrhosis",
+        "Symptom": [
+            "fatigue",
+            "jaundice",
+            "abdominal swelling"
+        ]
+    },
+    {
+        "Disease": "Pancreatitis",
+        "Symptom": [
+            "abdominal pain",
+            "nausea",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Kidney Stones",
+        "Symptom": [
+            "severe pain",
+            "nausea",
+            "blood in urine"
+        ]
+    },
+    {
+        "Disease": "UTI",
+        "Symptom": [
+            "frequent urination",
+            "burning sensation",
+            "cloudy urine"
+        ]
+    },
+    {
+        "Disease": "Bladder Infection",
+        "Symptom": [
+            "frequent urination",
+            "burning sensation",
+            "pelvic pain"
+        ]
+    },
+    {
+        "Disease": "Pyelonephritis",
+        "Symptom": [
+            "fever",
+            "back pain",
+            "frequent urination"
+        ]
+    },
+    {
+        "Disease": "Glomerulonephritis",
+        "Symptom": [
+            "blood in urine",
+            "foamy urine",
+            "swelling"
+        ]
+    },
+    {
+        "Disease": "Acute Kidney Injury",
+        "Symptom": [
+            "decreased urine output",
+            "fatigue",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Chronic Kidney Disease",
+        "Symptom": [
+            "fatigue",
+            "swelling",
+            "nausea"
+        ]
+    },
+    {
+        "Disease": "Nephrotic Syndrome",
+        "Symptom": [
+            "swelling",
+            "foamy urine",
+            "weight gain"
+        ]
+    },
+    {
+        "Disease": "Renal Cell Carcinoma",
+        "Symptom": [
+            "blood in urine",
+            "back pain",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "Interstitial Cystitis",
+        "Symptom": [
+            "pelvic pain",
+            "frequent urination",
+            "painful urination"
+        ]
+    },
+    {
+        "Disease": "Interstitial Lung Disease",
+        "Symptom": [
+            "shortness of breath",
+            "dry cough",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Pleurisy",
+        "Symptom": [
+            "sharp chest pain",
+            "shortness of breath",
+            "cough"
+        ]
+    },
+    {
+        "Disease": "Pneumothorax",
+        "Symptom": [
+            "sudden chest pain",
+            "shortness of breath",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Pulmonary Hypertension",
+        "Symptom": [
+            "shortness of breath",
+            "fatigue",
+            "chest pain"
+        ]
+    },
+    {
+        "Disease": "Sarcoidosis",
+        "Symptom": [
+            "fatigue",
+            "swollen lymph nodes",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Sleep Apnea",
+        "Symptom": [
+            "loud snoring",
+            "gasping during sleep",
+            "daytime fatigue"
+        ]
+    },
+    {
+        "Disease": "Tuberculosis (TB)",
+        "Symptom": [
+            "coughing blood",
+            "night sweats",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "Histoplasmosis",
+        "Symptom": [
+            "fever",
+            "cough",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Coccidioidomycosis",
+        "Symptom": [
+            "fever",
+            "cough",
+            "chest pain"
+        ]
+    },
+    {
+        "Disease": "Blastomycosis",
+        "Symptom": [
+            "fever",
+            "cough",
+            "chest pain"
+        ]
+    },
+    {
+        "Disease": "Aspergillosis",
+        "Symptom": [
+            "wheezing",
+            "coughing blood",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Valley Fever",
+        "Symptom": [
+            "fever",
+            "cough",
+            "chest pain"
+        ]
+    },
+    {
+        "Disease": "Chagas Disease",
+        "Symptom": [
+            "fever",
+            "swelling",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Schistosomiasis",
+        "Symptom": [
+            "rash",
+            "fever",
+            "abdominal pain"
+        ]
+    },
+    {
+        "Disease": "Dengue Fever",
+        "Symptom": [
+            "fever",
+            "severe headache",
+            "joint pain"
+        ]
+    },
+    {
+        "Disease": "Yellow Fever",
+        "Symptom": [
+            "fever",
+            "jaundice",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Zika Virus",
+        "Symptom": [
+            "fever",
+            "rash",
+            "joint pain"
+        ]
+    },
+    {
+        "Disease": "West Nile Virus",
+        "Symptom": [
+            "fever",
+            "headache",
+            "body aches"
+        ]
+    },
+    {
+        "Disease": "Chikungunya",
+        "Symptom": [
+            "fever",
+            "joint pain",
+            "rash"
+        ]
+    },
+    {
+        "Disease": "Japanese Encephalitis",
+        "Symptom": [
+            "fever",
+            "headache",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Rift Valley Fever",
+        "Symptom": [
+            "fever",
+            "headache",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Ebola Virus Disease",
+        "Symptom": [
+            "fever",
+            "severe headache",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Marburg Virus Disease",
+        "Symptom": [
+            "fever",
+            "severe headache",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Lassa Fever",
+        "Symptom": [
+            "fever",
+            "sore throat",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Hantavirus",
+        "Symptom": [
+            "fever",
+            "fatigue",
+            "muscle aches"
+        ]
+    },
+    {
+        "Disease": "Crimean-Congo Hemorrhagic Fever",
+        "Symptom": [
+            "fever",
+            "headache",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Lyme Disease",
+        "Symptom": [
+            "bull's-eye rash",
+            "fatigue",
+            "joint pain"
+        ]
+    },
+    {
+        "Disease": "Leptospirosis",
+        "Symptom": [
+            "fever",
+            "headache",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Rocky Mountain Spotted Fever",
+        "Symptom": [
+            "fever",
+            "rash",
+            "headache"
+        ]
+    },
+    {
+        "Disease": "Typhus",
+        "Symptom": [
+            "fever",
+            "headache",
+            "rash"
+        ]
+    },
+    {
+        "Disease": "Q Fever",
+        "Symptom": [
+            "fever",
+            "chills",
+            "sweats"
+        ]
+    },
+    {
+        "Disease": "Brucellosis",
+        "Symptom": [
+            "fever",
+            "sweats",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Tularemia",
+        "Symptom": [
+            "fever",
+            "skin ulcers",
+            "swollen lymph nodes"
+        ]
+    },
+    {
+        "Disease": "Anthrax",
+        "Symptom": [
+            "skin sores",
+            "fever",
+            "cough"
+        ]
+    },
+    {
+        "Disease": "Plague",
+        "Symptom": [
+            "fever",
+            "swollen lymph nodes",
+            "cough"
+        ]
+    },
+    {
+        "Disease": "Smallpox",
+        "Symptom": [
+            "fever",
+            "rash",
+            "body aches"
+        ]
+    },
+    {
+        "Disease": "Rabies",
+        "Symptom": [
+            "fever",
+            "headache",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Influenza",
+        "Symptom": [
+            "fever",
+            "cough",
+            "body aches"
+        ]
+    },
+    {
+        "Disease": "Avian Influenza",
+        "Symptom": [
+            "fever",
+            "cough",
+            "sore throat"
+        ]
+    },
+    {
+        "Disease": "Swine Flu",
+        "Symptom": [
+            "fever",
+            "cough",
+            "body aches"
+        ]
+    },
+    {
+        "Disease": "Middle East Respiratory Syndrome (MERS)",
+        "Symptom": [
+            "fever",
+            "cough",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Severe Acute Respiratory Syndrome (SARS)",
+        "Symptom": [
+            "fever",
+            "cough",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Cholera",
+        "Symptom": [
+            "diarrhea",
+            "dehydration",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Typhoid Fever",
+        "Symptom": [
+            "fever",
+            "stomach pain",
+            "headache"
+        ]
+    },
+    {
+        "Disease": "Diphtheria",
+        "Symptom": [
+            "sore throat",
+            "fever",
+            "swollen glands"
+        ]
+    },
+    {
+        "Disease": "Pertussis (Whooping Cough)",
+        "Symptom": [
+            "severe cough",
+            "runny nose",
+            "fever"
+        ]
+    },
+    {
+        "Disease": "Tetanus",
+        "Symptom": [
+            "muscle stiffness",
+            "jaw cramping",
+            "muscle spasms"
+        ]
+    },
+    {
+        "Disease": "Botulism",
+        "Symptom": [
+            "difficulty swallowing",
+            "muscle weakness",
+            "blurred vision"
+        ]
+    },
+    {
+        "Disease": "Leprosy (Hansen's Disease)",
+        "Symptom": [
+            "skin sores",
+            "numbness",
+            "muscle weakness"
+        ]
+    },
+    {
+        "Disease": "Syphilis",
+        "Symptom": [
+            "sores",
+            "rash",
+            "fever"
+        ]
+    },
+    {
+        "Disease": "Gonorrhea",
+        "Symptom": [
+            "painful urination",
+            "discharge",
+            "pelvic pain"
+        ]
+    },
+    {
+        "Disease": "Chlamydia",
+        "Symptom": [
+            "painful urination",
+            "discharge",
+            "pelvic pain"
+        ]
+    },
+    {
+        "Disease": "Trichomoniasis",
+        "Symptom": [
+            "itching",
+            "discharge",
+            "painful urination"
+        ]
+    },
+    {
+        "Disease": "Genital Herpes",
+        "Symptom": [
+            "blisters",
+            "itching",
+            "painful urination"
+        ]
+    },
+    {
+        "Disease": "Human Papillomavirus (HPV)",
+        "Symptom": [
+            "warts",
+            "itching",
+            "discomfort"
+        ]
+    },
+    {
+        "Disease": "Zika Virus",
+        "Symptom": [
+            "fever",
+            "rash",
+            "joint pain"
+        ]
+    },
+    {
+        "Disease": "Dengue Fever",
+        "Symptom": [
+            "fever",
+            "severe headache",
+            "joint pain"
+        ]
+    },
+    {
+        "Disease": "Yellow Fever",
+        "Symptom": [
+            "fever",
+            "jaundice",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Chikungunya",
+        "Symptom": [
+            "fever",
+            "joint pain",
+            "rash"
+        ]
+    },
+    {
+        "Disease": "West Nile Virus",
+        "Symptom": [
+            "fever",
+            "headache",
+            "body aches"
+        ]
+    },
+    {
+        "Disease": "Japanese Encephalitis",
+        "Symptom": [
+            "fever",
+            "headache",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Rift Valley Fever",
+        "Symptom": [
+            "fever",
+            "headache",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Ebola Virus Disease",
+        "Symptom": [
+            "fever",
+            "severe headache",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Marburg Virus Disease",
+        "Symptom": [
+            "fever",
+            "severe headache",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Lassa Fever",
+        "Symptom": [
+            "fever",
+            "sore throat",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Hantavirus",
+        "Symptom": [
+            "fever",
+            "fatigue",
+            "muscle aches"
+        ]
+    },
+    {
+        "Disease": "Crimean-Congo Hemorrhagic Fever",
+        "Symptom": [
+            "fever",
+            "headache",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Lyme Disease",
+        "Symptom": [
+            "bull's-eye rash",
+            "fatigue",
+            "joint pain"
+        ]
+    },
+    {
+        "Disease": "Leptospirosis",
+        "Symptom": [
+            "fever",
+            "headache",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Rocky Mountain Spotted Fever",
+        "Symptom": [
+            "fever",
+            "rash",
+            "headache"
+        ]
+    },
+    {
+        "Disease": "Typhus",
+        "Symptom": [
+            "fever",
+            "headache",
+            "rash"
+        ]
+    },
+    {
+        "Disease": "Q Fever",
+        "Symptom": [
+            "fever",
+            "chills",
+            "sweats"
+        ]
+    },
+    {
+        "Disease": "Brucellosis",
+        "Symptom": [
+            "fever",
+            "sweats",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Tularemia",
+        "Symptom": [
+            "fever",
+            "skin ulcers",
+            "swollen lymph nodes"
+        ]
+    },
+    {
+        "Disease": "Anthrax",
+        "Symptom": [
+            "skin sores",
+            "fever",
+            "cough"
+        ]
+    },
+    {
+        "Disease": "Plague",
+        "Symptom": [
+            "fever",
+            "swollen lymph nodes",
+            "cough"
+        ]
+    },
+    {
+        "Disease": "Smallpox",
+        "Symptom": [
+            "fever",
+            "rash",
+            "body aches"
+        ]
+    },
+    {
+        "Disease": "Rabies",
+        "Symptom": [
+            "fever",
+            "headache",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Influenza",
+        "Symptom": [
+            "fever",
+            "cough",
+            "body aches"
+        ]
+    },
+    {
+        "Disease": "Avian Influenza",
+        "Symptom": [
+            "fever",
+            "cough",
+            "sore throat"
+        ]
+    },
+    {
+        "Disease": "Swine Flu",
+        "Symptom": [
+            "fever",
+            "cough",
+            "body aches"
+        ]
+    },
+    {
+        "Disease": "Middle East Respiratory Syndrome (MERS)",
+        "Symptom": [
+            "fever",
+            "cough",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Severe Acute Respiratory Syndrome (SARS)",
+        "Symptom": [
+            "fever",
+            "cough",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Cholera",
+        "Symptom": [
+            "diarrhea",
+            "dehydration",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Typhoid Fever",
+        "Symptom": [
+            "fever",
+            "stomach pain",
+            "headache"
+        ]
+    },
+    {
+        "Disease": "Diphtheria",
+        "Symptom": [
+            "sore throat",
+            "fever",
+            "swollen glands"
+        ]
+    },
+    {
+        "Disease": "Pertussis (Whooping Cough)",
+        "Symptom": [
+            "severe cough",
+            "runny nose",
+            "fever"
+        ]
+    },
+    {
+        "Disease": "Tetanus",
+        "Symptom": [
+            "muscle stiffness",
+            "jaw cramping",
+            "muscle spasms"
+        ]
+    },
+    {
+        "Disease": "Botulism",
+        "Symptom": [
+            "difficulty swallowing",
+            "muscle weakness",
+            "blurred vision"
+        ]
+    },
+    {
+        "Disease": "Leprosy (Hansen's Disease)",
+        "Symptom": [
+            "skin sores",
+            "numbness",
+            "muscle weakness"
+        ]
+    },
+    {
+        "Disease": "Syphilis",
+        "Symptom": [
+            "sores",
+            "rash",
+            "fever"
+        ]
+    },
+    {
+        "Disease": "Gonorrhea",
+        "Symptom": [
+            "painful urination",
+            "discharge",
+            "pelvic pain"
+        ]
+    },
+    {
+        "Disease": "Chlamydia",
+        "Symptom": [
+            "painful urination",
+            "discharge",
+            "pelvic pain"
+        ]
+    },
+    {
+        "Disease": "Trichomoniasis",
+        "Symptom": [
+            "itching",
+            "discharge",
+            "painful urination"
+        ]
+    },
+    {
+        "Disease": "Genital Herpes",
+        "Symptom": [
+            "blisters",
+            "itching",
+            "painful urination"
+        ]
+    },
+    {
+        "Disease": "Human Papillomavirus (HPV)",
+        "Symptom": [
+            "warts",
+            "itching",
+            "discomfort"
+        ]
+    },
+    {
+        "Disease": "Dengue Fever",
+        "Symptom": [
+            "high fever",
+            "severe headache",
+            "joint pain"
+        ]
+    },
+    {
+        "Disease": "Chikungunya",
+        "Symptom": [
+            "fever",
+            "joint pain",
+            "rash"
+        ]
+    },
+    {
+        "Disease": "Malaria",
+        "Symptom": [
+            "fever",
+            "chills",
+            "sweats"
+        ]
+    },
+    {
+        "Disease": "Typhoid Fever",
+        "Symptom": [
+            "high fever",
+            "abdominal pain",
+            "headache"
+        ]
+    },
+    {
+        "Disease": "Leptospirosis",
+        "Symptom": [
+            "fever",
+            "headache",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Kala-Azar (Visceral Leishmaniasis)",
+        "Symptom": [
+            "fever",
+            "weight loss",
+            "enlarged spleen"
+        ]
+    },
+    {
+        "Disease": "Japanese Encephalitis",
+        "Symptom": [
+            "fever",
+            "headache",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Cholera",
+        "Symptom": [
+            "severe diarrhea",
+            "dehydration",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Filariasis",
+        "Symptom": [
+            "swelling of limbs",
+            "fever",
+            "pain"
+        ]
+    },
+    {
+        "Disease": "Scrub Typhus",
+        "Symptom": [
+            "fever",
+            "rash",
+            "headache"
+        ]
+    },
+    {
+        "Disease": "Diphtheria",
+        "Symptom": [
+            "sore throat",
+            "fever",
+            "swollen glands"
+        ]
+    },
+    {
+        "Disease": "Pertussis (Whooping Cough)",
+        "Symptom": [
+            "severe cough",
+            "runny nose",
+            "fever"
+        ]
+    },
+    {
+        "Disease": "Tuberculosis",
+        "Symptom": [
+            "coughing blood",
+            "night sweats",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "Polio",
+        "Symptom": [
+            "paralysis",
+            "fever",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Measles",
+        "Symptom": [
+            "rash",
+            "fever",
+            "cough"
+        ]
+    },
+    {
+        "Disease": "Mumps",
+        "Symptom": [
+            "swollen glands",
+            "fever",
+            "headache"
+        ]
+    },
+    {
+        "Disease": "Rubella",
+        "Symptom": [
+            "rash",
+            "fever",
+            "swollen glands"
+        ]
+    },
+    {
+        "Disease": "Hepatitis A",
+        "Symptom": [
+            "jaundice",
+            "fatigue",
+            "abdominal pain"
+        ]
+    },
+    {
+        "Disease": "Hepatitis E",
+        "Symptom": [
+            "jaundice",
+            "fatigue",
+            "abdominal pain"
+        ]
+    },
+    {
+        "Disease": "Acute Encephalitis Syndrome",
+        "Symptom": [
+            "fever",
+            "headache",
+            "altered consciousness"
+        ]
+    },
+    {
+        "Disease": "Hand, Foot, and Mouth Disease",
+        "Symptom": [
+            "fever",
+            "rash",
+            "sore throat"
+        ]
+    },
+    {
+        "Disease": "Chickenpox",
+        "Symptom": [
+            "rash",
+            "itching",
+            "fever"
+        ]
+    },
+    {
+        "Disease": "Leprosy",
+        "Symptom": [
+            "skin lesions",
+            "numbness",
+            "muscle weakness"
+        ]
+    },
+    {
+        "Disease": "Scabies",
+        "Symptom": [
+            "intense itching",
+            "rash",
+            "sores"
+        ]
+    },
+    {
+        "Disease": "Dermatophytosis (Ringworm)",
+        "Symptom": [
+            "itchy rash",
+            "red rings",
+            "scaly skin"
+        ]
+    },
+    {
+        "Disease": "Impetigo",
+        "Symptom": [
+            "red sores",
+            "itching",
+            "swelling"
+        ]
+    },
+    {
+        "Disease": "Trachoma",
+        "Symptom": [
+            "eye discharge",
+            "eye pain",
+            "blurred vision"
+        ]
+    },
+    {
+        "Disease": "Conjunctivitis",
+        "Symptom": [
+            "red eyes",
+            "itching",
+            "discharge"
+        ]
+    },
+    {
+        "Disease": "Glaucoma",
+        "Symptom": [
+            "vision loss",
+            "eye pain",
+            "headache"
+        ]
+    },
+    {
+        "Disease": "River Blindness (Onchocerciasis)",
+        "Symptom": [
+            "itchy skin",
+            "rashes",
+            "vision loss"
+        ]
+    },
+    {
+        "Disease": "Schistosomiasis",
+        "Symptom": [
+            "rash",
+            "fever",
+            "abdominal pain"
+        ]
+    },
+    {
+        "Disease": "Guinea Worm Disease",
+        "Symptom": [
+            "painful blisters",
+            "fever",
+            "swelling"
+        ]
+    },
+    {
+        "Disease": "Hookworm Infection",
+        "Symptom": [
+            "abdominal pain",
+            "anemia",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Ascariasis",
+        "Symptom": [
+            "abdominal pain",
+            "nausea",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "Strongyloidiasis",
+        "Symptom": [
+            "abdominal pain",
+            "diarrhea",
+            "cough"
+        ]
+    },
+    {
+        "Disease": "Giardiasis",
+        "Symptom": [
+            "diarrhea",
+            "stomach cramps",
+            "nausea"
+        ]
+    },
+    {
+        "Disease": "Amoebiasis",
+        "Symptom": [
+            "diarrhea",
+            "stomach pain",
+            "fever"
+        ]
+    },
+    {
+        "Disease": "Cryptosporidiosis",
+        "Symptom": [
+            "diarrhea",
+            "stomach cramps",
+            "nausea"
+        ]
+    },
+    {
+        "Disease": "Toxoplasmosis",
+        "Symptom": [
+            "fever",
+            "swollen glands",
+            "muscle pain"
+        ]
+    },
+    {
+        "Disease": "Cysticercosis",
+        "Symptom": [
+            "seizures",
+            "muscle pain",
+            "headaches"
+        ]
+    },
+    {
+        "Disease": "Echinococcosis",
+        "Symptom": [
+            "abdominal pain",
+            "chest pain",
+            "nausea"
+        ]
+    },
+    {
+        "Disease": "Leishmaniasis (Cutaneous)",
+        "Symptom": [
+            "skin sores",
+            "lesions",
+            "swelling"
+        ]
+    },
+    {
+        "Disease": "Leishmaniasis (Mucocutaneous)",
+        "Symptom": [
+            "nosebleeds",
+            "mouth sores",
+            "difficulty breathing"
+        ]
+    },
+    {
+        "Disease": "Rheumatic Heart Disease",
+        "Symptom": [
+            "chest pain",
+            "shortness of breath",
+            "swelling"
+        ]
+    },
+    {
+        "Disease": "Sickle Cell Disease",
+        "Symptom": [
+            "pain episodes",
+            "fatigue",
+            "swelling"
+        ]
+    },
+    {
+        "Disease": "Thalassemia",
+        "Symptom": [
+            "fatigue",
+            "weakness",
+            "pale skin"
+        ]
+    },
+    {
+        "Disease": "Vitamin A Deficiency",
+        "Symptom": [
+            "night blindness",
+            "dry eyes",
+            "immune deficiencies"
+        ]
+    },
+    {
+        "Disease": "Iron Deficiency Anemia",
+        "Symptom": [
+            "fatigue",
+            "weakness",
+            "pale skin"
+        ]
+    },
+    {
+        "Disease": "Iodine Deficiency",
+        "Symptom": [
+            "goiter",
+            "weight gain",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Zinc Deficiency",
+        "Symptom": [
+            "growth retardation",
+            "loss of appetite",
+            "impaired immune function"
+        ]
+    },
+    {
+        "Disease": "Kwashiorkor",
+        "Symptom": [
+            "swelling",
+            "fatigue",
+            "skin conditions"
+        ]
+    },
+    {
+        "Disease": "Marasmus",
+        "Symptom": [
+            "severe weight loss",
+            "weakness",
+            "growth retardation"
+        ]
+    },
+    {
+        "Disease": "Rickets",
+        "Symptom": [
+            "bone pain",
+            "delayed growth",
+            "muscle weakness"
+        ]
+    },
+    {
+        "Disease": "Scurvy",
+        "Symptom": [
+            "fatigue",
+            "gum disease",
+            "skin hemorrhages"
+        ]
+    },
+    {
+        "Disease": "Beriberi",
+        "Symptom": [
+            "weakness",
+            "nerve damage",
+            "cardiovascular symptoms"
+        ]
+    },
+    {
+        "Disease": "Pellegra",
+        "Symptom": [
+            "diarrhea",
+            "dermatitis",
+            "dementia"
+        ]
+    },
+    {
+        "Disease": "Helicobacter pylori Infection",
+        "Symptom": [
+            "stomach pain",
+            "nausea",
+            "bloating"
+        ]
+    },
+    {
+        "Disease": "Gastroenteritis",
+        "Symptom": [
+            "diarrhea",
+            "nausea",
+            "stomach pain"
+        ]
+    },
+    {
+        "Disease": "Acute Pancreatitis",
+        "Symptom": [
+            "severe abdominal pain",
+            "nausea",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Chronic Pancreatitis",
+        "Symptom": [
+            "abdominal pain",
+            "weight loss",
+            "diarrhea"
+        ]
+    },
+    {
+        "Disease": "Gallstones",
+        "Symptom": [
+            "abdominal pain",
+            "nausea",
+            "vomiting"
+        ]
+    },
+    {
+        "Disease": "Liver Cirrhosis",
+        "Symptom": [
+            "fatigue",
+            "jaundice",
+            "abdominal swelling"
+        ]
+    },
+    {
+        "Disease": "Portal Hypertension",
+        "Symptom": [
+            "abdominal pain",
+            "swollen veins",
+            "fatigue"
+        ]
+    },
+    {
+        "Disease": "Hepatic Encephalopathy",
+        "Symptom": [
+            "confusion",
+            "fatigue",
+            "tremor"
+        ]
+    },
+    {
+        "Disease": "Kidney Stones",
+        "Symptom": [
+            "severe pain",
+            "nausea",
+            "blood in urine"
+        ]
+    },
+    {
+        "Disease": "Chronic Kidney Disease",
+        "Symptom": [
+            "fatigue",
+            "swelling",
+            "nausea"
+        ]
+    },
+    {
+        "Disease": "Acute Kidney Injury",
+        "Symptom": [
+            "decreased urine output",
+            "fatigue",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Interstitial Cystitis",
+        "Symptom": [
+            "pelvic pain",
+            "frequent urination",
+            "painful urination"
+        ]
+    },
+    {
+        "Disease": "Benign Prostatic Hyperplasia",
+        "Symptom": [
+            "frequent urination",
+            "difficulty urinating",
+            "weak urine stream"
+        ]
+    },
+    {
+        "Disease": "Urinary Tract Infection",
+        "Symptom": [
+            "frequent urination",
+            "burning sensation",
+            "cloudy urine"
+        ]
+    },
+    {
+        "Disease": "Bladder Cancer",
+        "Symptom": [
+            "blood in urine",
+            "frequent urination",
+            "pelvic pain"
+        ]
+    },
+    {
+        "Disease": "Prostate Cancer",
+        "Symptom": [
+            "difficulty urinating",
+            "blood in urine",
+            "pelvic discomfort"
+        ]
+    },
+    {
+        "Disease": "Penile Cancer",
+        "Symptom": [
+            "sore on penis",
+            "discharge",
+            "bleeding"
+        ]
+    },
+    {
+        "Disease": "Cervical Cancer",
+        "Symptom": [
+            "vaginal bleeding",
+            "pelvic pain",
+            "pain during intercourse"
+        ]
+    },
+    {
+        "Disease": "Breast Cancer",
+        "Symptom": [
+            "lump in breast",
+            "change in breast shape",
+            "nipple discharge"
+        ]
+    },
+    {
+        "Disease": "Ovarian Cancer",
+        "Symptom": [
+            "abdominal bloating",
+            "pelvic pain",
+            "frequent urination"
+        ]
+    },
+    {
+        "Disease": "Uterine Cancer",
+        "Symptom": [
+            "vaginal bleeding",
+            "pelvic pain",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "Vulvar Cancer",
+        "Symptom": [
+            "itching",
+            "pain",
+            "bleeding"
+        ]
+    },
+    {
+        "Disease": "Testicular Cancer",
+        "Symptom": [
+            "lump in testicle",
+            "swelling",
+            "pain"
+        ]
+    },
+    {
+        "Disease": "Lung Cancer",
+        "Symptom": [
+            "persistent cough",
+            "chest pain",
+            "shortness of breath"
+        ]
+    },
+    {
+        "Disease": "Oral Cancer",
+        "Symptom": [
+            "mouth sores",
+            "painful swallowing",
+            "mouth pain"
+        ]
+    },
+    {
+        "Disease": "Esophageal Cancer",
+        "Symptom": [
+            "difficulty swallowing",
+            "chest pain",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "Stomach Cancer",
+        "Symptom": [
+            "abdominal pain",
+            "nausea",
+            "weight loss"
+        ]
+    },
+    {
+        "Disease": "Colorectal Cancer",
+        "Symptom": [
+            "blood in stool",
+            "change in bowel habits",
+            "abdominal pain"
+        ]
+    },
+    {
+        "Disease": "Pancreatic Cancer",
+        "Symptom": [
+            "abdominal pain",
+            "weight loss",
+            "jaundice"
+        ]
+    },
+    {
+        "Disease": "Liver Cancer",
+        "Symptom": [
+            "abdominal pain",
+            "weight loss",
+            "jaundice"
+        ]
+    }
+]
