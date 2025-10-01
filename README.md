@@ -1,8 +1,8 @@
-# illaaJ - The AI Doctor Assistant
+# IlaaJ - The AI Doctor Assistant
 
 <!--![Project Logo](link-to-your-logo.png)-->
 
-illaaJ is an AI-powered doctor assistant that helps you detect diseases based on your symptoms and provides home remedies. With a simple and intuitive interface, illaaJ aims to offer quick and accessible healthcare solutions to everyone.
+IlaaJ is an AI-powered doctor assistant that helps you detect diseases based on your symptoms and provides home remedies. With a simple and intuitive interface, illaaJ aims to offer quick and accessible healthcare solutions to everyone.
 
 
 ## Features
