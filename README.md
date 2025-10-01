@@ -24,8 +24,8 @@ illaaJ is an AI-powered doctor assistant that helps you detect diseases based on
 
 1. **Clone the repository:**
 ```
-git clone https://github.com/AnirudhPradhan/illaaJ.git
-cd illaaJ
+git clone https://github.com/rajveer100704/Ilaaj.git
+cd IlaaJ
 ```
 
 ## Setup process
