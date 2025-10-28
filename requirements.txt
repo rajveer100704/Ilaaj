@@ -1,7 +1,8 @@
 Flask==3.0.3
-python-dotenv==1.0.1
-google-generativeai==0.8.5
-rapidfuzz==3.9.4
+redis==5.0.4
+gunicorn==23.0.0
 requests==2.32.3
-gunicorn==22.0.0
-redis==5.1.1
+itsdangerous==2.2.0
+click==8.1.7
+Werkzeug==3.0.4
+Jinja2==3.1.4
