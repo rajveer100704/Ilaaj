@@ -1,133 +1,106 @@
+/* Basic reset & typography */
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    padding: 20px;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    margin: 0;
+    background: #f4f6f8;
+    color: #222;
+    line-height: 1.4;
 }
 
-.container {
-    max-width: 800px;
+header {
+    background: #0077b6;
+    color: white;
+    padding: 12px 20px;
+}
+
+.nav-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1100px;
     margin: 0 auto;
-    font-weight: bold;
 }
 
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-nav {
-    margin-bottom: 20px;
-    text-align: center;
+.brand a {
+    color: white;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1.25rem;
 }
 
 nav a {
-    margin: 0 10px;
+    color: white;
+    margin-left: 18px;
     text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
 }
 
-nav a:hover {
-    text-decoration: underline;
+main {
+    max-width: 980px;
+    margin: 24px auto;
+    padding: 0 16px;
 }
 
-.form-group {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-input[type="text"] {
-    width: calc(100% - 22px); /* Adjusts width to fit within its container */
-    padding: 12px; /* Slightly reduced padding */
-    border: 1px solid #ddd; /* Light border color */
-    border-radius: 8px; /* Rounded corners */
-    margin-bottom: 15px; /* Space below the input */
-    margin-top: 10px;
-    font-size: 16px; /* Slightly reduced font size */
-    height: 50px; /* Slightly reduced height */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
-    opacity: 0.7; /* Decrease opacity */
-}
-
-input[type="text"]:focus {
-    border-color: #007bff; /* Border color on focus */
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2); /* Enhanced shadow on focus */
-    outline: none; /* Remove default outline */
-    opacity: 1; /* Full opacity on focus */
-}
-
-input[type="submit"] {
-    padding: 13px 23px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-input[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-.disease-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-.disease-list li {
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #ffffff;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.remedies-form {
-    display: flex;
-    justify-content: flex-end;
-    margin: 0;
-}
-
-.remedies-button {
-    padding: 10px 20px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.remedies-button:hover {
-    background-color: #218838;
-}
-
-pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font-family: monospace;
-    background-color: #f4f4f4;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.back-button {
-    display: block;
+/* Home section */
+.center {
     text-align: center;
-    margin-top: 20px;
-    text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
-.back-button:hover {
-    text-decoration: underline;
+.btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    background: #0077b6;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+/* Diagnose page */
+.diagnose, .results {
+    background: #fff;
+    padding: 1.6rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #dcdcdc;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+button, .btn {
+    cursor: pointer;
+    border: none;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.results-table th, .results-table td {
+    border: 1px solid #eee;
+    padding: 0.7rem;
+    text-align: left;
+}
+
+.results-table th {
+    background: #0077b6;
+    color: #fff;
+}
+
+/* small utilities */
+.error {
+    color: #c0392b;
+    font-weight: 600;
+    margin-top: 1rem;
 }
