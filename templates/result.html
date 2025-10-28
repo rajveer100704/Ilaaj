@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="results">
+    <h2>Diagnosis Results</h2>
+    {% if symptoms %}
+    <p>Query: {{ symptoms }}</p>
+    {% endif %}
+
+    <table class="results-table">
+        <thead>
+            <tr><th>Rank</th><th>Disease</th><th>Confidence</th><th>Remedy</th></tr>
+        </thead>
+        <tbody>
+            {% for r in results %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ r.Disease }}</td>
+                <td>{{ r.Confidence }}</td>
+                <td>{{ r.Remedy }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="margin-top:1rem">
+        <a href="{{ url_for('diagnose_page') }}">← Diagnose again</a>
+    </div>
+</section>
+{% endblock %}
