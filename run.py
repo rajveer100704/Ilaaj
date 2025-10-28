@@ -1,103 +1,104 @@
-from flask import Flask, render_template, request
-import google.generativeai as genai
-import json
-import re
 import os
+import google.generativeai as genai
+from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
+from rapidfuzz import process, fuzz
+import redis
+import json
 
-load_dotenv(override=True)
+# Load environment variables
+load_dotenv()
 
+# Flask setup
 app = Flask(__name__)
 
-# Retrieve the API key from environment variables
-api_key = os.environ.get("api_key1")
-if not api_key:
-    raise ValueError("No API key found in environment variables.")
+# Configure Gemini
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-# Configure the Gemini API with the retrieved API key
-genai.configure(api_key=api_key)
+# Redis setup (optional caching)
+redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+redis_client = redis.from_url(redis_url)
 
-def load_database():
-    """Load the disease dataset from a JSON file."""
-    try:
-        with open('database/disease_dataset.json') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return []
+# Load remedies data
+remedies_data = [
+    {"symptom": "headache", "remedy": "Drink water, rest, and take paracetamol if needed."},
+    {"symptom": "fever", "remedy": "Stay hydrated, rest, and take acetaminophen if temperature is high."},
+    {"symptom": "cold", "remedy": "Drink warm fluids and take steam inhalation."},
+    {"symptom": "stomach ache", "remedy": "Eat light food and avoid oily meals."},
+    {"symptom": "cough", "remedy": "Drink honey with warm water and rest your voice."}
+]
 
-def diagnose(symptoms):
-    """Diagnose diseases based on the provided symptoms."""
-    database = load_database()
-    matched_diseases = []
-    symptoms_set = {symptom.lower() for symptom in symptoms}  # Convert symptoms to lowercase
 
-    for entry in database:
-        disease_symptoms = {symptom.lower() for symptom in entry["Symptom"]}  # Convert symptoms in the database to lowercase
-        if symptoms_set.issubset(disease_symptoms):
-            matched_diseases.append(entry["Disease"])
+def ai_diagnose(symptom_text):
+    """Diagnose symptoms using Gemini API with fallback logic."""
+    cache_key = f"diagnosis:{symptom_text.lower()}"
 
-    return matched_diseases
+    # Check cache
+    cached = redis_client.get(cache_key)
+    if cached:
+        print("🔁 Cache hit")
+        return json.loads(cached)
 
-def format_bullet_points(text):
-    """Convert numbered text into HTML unordered list."""
-    text = re.sub(r'^##\s+', '', text, flags=re.MULTILINE)
-    # Match numbered points without markdown
-    pattern = r'(\d+\.\s)(.*?)(?=\d+\.\s|\Z)'
-    items = re.findall(pattern, text, flags=re.DOTALL)
-    
-    li_elements = [f"<li>{item[1].strip()}</li>" for item in items]
-    return f"<ul>\n" + "\n".join(li_elements) + "\n</ul>"
+    print("💡 Cache miss – querying Gemini...")
+    model = genai.GenerativeModel("gemini-pro")
+    prompt = f"""
+    You are a professional doctor assistant AI.
+    Given the following symptoms: "{symptom_text}",
+    provide a short and clear probable diagnosis and possible home remedies.
+    """
+    response = model.generate_content(prompt)
+    diagnosis = response.text.strip()
 
-def get_remedies(disease):
-    """Fetch and format remedies using Gemini API."""
-    try:
-        model = genai.GenerativeModel(model_name="gemini-2.0-flash")
-        prompt = f'''
-        List 10 precautions for {disease} in this exact format:
-        1. [Precaution 1]
-        2. [Precaution 2]
-        ...
-        10. [Precaution 10]
-        '''
-        response = model.generate_content(prompt)
-        
-        # Handle API errors (Result 2)
-        if not response.candidates:
-            return "Error: No response from API"
-            
-        text = response.candidates[0].content.parts[0].text
-        return format_bullet_points(text)
-        
-    except Exception as e:
-        return f"Error: {str(e)}"
+    redis_client.setex(cache_key, 3600, json.dumps(diagnosis))
+    return diagnosis
 
-@app.route('/', methods=['GET'])
-@app.route('/index', methods=['GET'])
-def index():
-    """Render the home page."""
-    return render_template('index.html')
 
-@app.route('/diagnose', methods=['GET', 'POST'])
-def diagnose_route():
-    """Handle the diagnosis route."""
-    diseases = None
-    if request.method == 'POST':
-        symptoms_input = request.form.get('Symptom')
-        if symptoms_input:
-            symptoms_list = [symptom.strip().lower() for symptom in symptoms_input.split(',')]  # Convert input to lowercase
-            diseases = diagnose(symptoms_list)
-    return render_template('diagnose.html', diseases=diseases)
+def find_remedy(symptom_text):
+    """Find the closest remedy using fuzzy matching."""
+    symptoms = [item["symptom"] for item in remedies_data]
+    best_match, score, idx = process.extractOne(symptom_text, symptoms, scorer=fuzz.partial_ratio)
+    if score > 60:
+        return remedies_data[idx]["remedy"]
+    return "No direct remedy found. Please consult a doctor."
 
-@app.route('/remedies', methods=['GET', 'POST'])
-def remedies_route():
-    """Handle the remedies route."""
-    selected_disease = None
-    remedies = None
-    if request.method == 'POST':
-        selected_disease = request.form.get('Disease')
-        if selected_disease:
-            remedies = get_remedies(selected_disease)
-    return render_template('remedies.html', selected_disease=selected_disease, remedies=remedies)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+
+@app.route("/diagnose", methods=["GET", "POST"])
+def diagnose():
+    if request.method == "POST":
+        user_input = request.form.get("symptoms")
+        if not user_input:
+            return render_template("diagnose.html", error="Please enter symptoms.")
+
+        ai_response = ai_diagnose(user_input)
+        remedy = find_remedy(user_input)
+
+        return render_template("result.html", diagnosis=ai_response, remedy=remedy, symptoms=user_input)
+
+    return render_template("diagnose.html")
+
+
+@app.route("/remedies")
+def remedies():
+    return render_template("remedies.html", remedies=remedies_data)
+
+
+@app.route("/api/diagnose", methods=["POST"])
+def api_diagnose():
+    data = request.get_json()
+    if not data or "symptoms" not in data:
+        return jsonify({"error": "Missing symptoms"}), 400
+
+    user_input = data["symptoms"]
+    ai_response = ai_diagnose(user_input)
+    remedy = find_remedy(user_input)
+
+    return jsonify({"diagnosis": ai_response, "remedy": remedy})
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)), debug=True)
