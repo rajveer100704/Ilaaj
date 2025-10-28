@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: ilaaj_app
+    command: gunicorn --bind 0.0.0.0:5000 run:app
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    restart: always
+    volumes:
+      - .:/app
+
+  redis:
+    image: redis:7-alpine
+    container_name: ilaaj_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
