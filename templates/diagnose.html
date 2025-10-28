@@ -1,58 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="diagnose">
+<div class="diagnose-page">
     <h2>AI Symptom Diagnosis</h2>
-    <p class="subtitle">Enter symptoms separated by commas (e.g., fever, cough, headache)</p>
+    <p>Enter your symptoms below to get a possible diagnosis:</p>
 
-    <form id="diagnoseForm">
-        <textarea id="symptoms" name="symptoms" rows="5" placeholder="e.g. fever, cough, headache"></textarea>
-        <br>
-        <button type="submit">Get Diagnosis</button>
-    </form>
+    <textarea id="symptoms" rows="4" placeholder="e.g., fever, cough, sore throat"></textarea>
+    <button id="diagnoseBtn">Diagnose</button>
 
-    <div id="loading" style="display:none;">🔍 Analyzing... please wait.</div>
-    <div id="results"></div>
-</section>
+    <div id="resultBox"></div>
+</div>
 
 <script>
-document.getElementById('diagnoseForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    const input = document.getElementById('symptoms').value.trim();
-    if (!input) {
-        alert('Please enter at least one symptom.');
+document.getElementById("diagnoseBtn").addEventListener("click", async () => {
+    const symptoms = document.getElementById("symptoms").value.trim();
+    if (!symptoms) {
+        alert("Please enter your symptoms.");
         return;
     }
 
-    document.getElementById('results').innerHTML = '';
-    document.getElementById('loading').style.display = 'block';
-
     try {
-        const payload = { symptoms: input.includes(',') ? input.split(',').map(s => s.trim()) : input };
-        const resp = await fetch('/predict', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+        const res = await fetch("/api/diagnose", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ symptoms })
         });
-        const data = await resp.json();
-        document.getElementById('loading').style.display = 'none';
 
+        const data = await res.json();
         if (data.error) {
-            document.getElementById('results').innerHTML = `<p class="error">${data.error}</p>`;
-            return;
+            document.getElementById("resultBox").innerText = "⚠️ " + data.error;
+        } else {
+            document.getElementById("resultBox").innerText = "🧠 " + data.result + 
+                (data.cached ? " (from cache)" : "");
         }
-
-        const results = data.results || [];
-        let html = `<h3>Results (${data.source})</h3>`;
-        html += `<table class="results-table"><thead><tr><th>Rank</th><th>Disease</th><th>Confidence</th><th>Remedy</th></tr></thead><tbody>`;
-        results.forEach((r, i) => {
-            html += `<tr><td>${i+1}</td><td>${r.Disease}</td><td>${r.Confidence}</td><td>${r.Remedy}</td></tr>`;
-        });
-        html += `</tbody></table>`;
-        document.getElementById('results').innerHTML = html;
     } catch (err) {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('results').innerHTML = `<p class="error">Something went wrong. Try again.</p>`;
         console.error(err);
+        document.getElementById("resultBox").innerText = "Server error. Try again later.";
     }
 });
 </script>
