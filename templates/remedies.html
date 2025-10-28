@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-<section>
-    <h2>Common Remedies</h2>
+<div class="remedies-page">
+    <h2>Natural Remedies</h2>
+    <p>Here are some common home remedies for basic health issues:</p>
+
     <ul>
-        <li><b>Common Cold:</b> Rest, warm fluids, steam inhalation.</li>
-        <li><b>Fever:</b> Hydrate, rest, paracetamol if needed.</li>
-        <li><b>Headache:</b> Rest, hydrate, avoid bright lights.</li>
+        <li><b>Cold & Cough:</b> Drink warm ginger tea with honey.</li>
+        <li><b>Headache:</b> Apply peppermint oil on your temples.</li>
+        <li><b>Indigestion:</b> Mix lemon juice and warm water with a pinch of salt.</li>
+        <li><b>Fatigue:</b> Stay hydrated and eat magnesium-rich foods.</li>
     </ul>
-    <p>For personalized remedies, use the <a href="{{ url_for('diagnose_page') }}">Diagnose</a> page.</p>
-</section>
+</div>
 {% endblock %}
