@@ -1,34 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- Single Input Form -->
-<form action="/diagnose" method="POST" class="diagnosis-form">
-    <div class="form-group">
-        <label for="symptom">Enter Symptoms (comma separated):</label>
-        <input type="text" id="symptom" name="Symptom" placeholder="e.g., fever, cough, shortness of breath">
-        <input type="submit" value="Diagnose">
-    </div>
-</form>
-
-<!-- Diagnosis Results -->
-{% if selected_disease %}
-    <h2>Diagnosis Result:</h2>
-    <ul class="disease-list">
-        <li>{{ selected_disease }}
-            <form action="/remedies" method="POST" class="remedies-form">
-                <input type="hidden" name="Disease" value="{{ selected_disease }}">
-                <button type="submit" class="remedies-button">Get Remedies</button>
-            </form>
-        </li>
+<section>
+    <h2>Common Remedies</h2>
+    <ul>
+        <li><b>Common Cold:</b> Rest, warm fluids, steam inhalation.</li>
+        <li><b>Fever:</b> Hydrate, rest, paracetamol if needed.</li>
+        <li><b>Headache:</b> Rest, hydrate, avoid bright lights.</li>
     </ul>
-{% endif %}
-
-<!-- Remedies Result -->
-{% if remedies %}
-    <h2>Remedies for {{ selected_disease }}:</h2>
-    <div class="remedies-list">
-        {{ remedies|safe }}
-    </div>
-{% else %}
-    <p>No remedies found.</p>
-{% endif %}
-{% endblock content %}
+    <p>For personalized remedies, use the <a href="{{ url_for('diagnose_page') }}">Diagnose</a> page.</p>
+</section>
+{% endblock %}
