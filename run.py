@@ -70,9 +70,9 @@ def api_diagnose():
         traceback.print_exc()
         return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
 
-@app.errorhandler(404)
-def not_found(e):
-    return render_template("404.html"), 404
+#@app.errorhandler(404)
+#def not_found(e):
+#    return render_template("404.html"), 404
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
