@@ -1,29 +1,59 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- Single Input Form (from index.html) -->
-<form action="/diagnose" method="POST" class="diagnosis-form">
-    <div class="form-group">
-        <label for="symptom">Enter Symptoms (comma separated):</label>
-        <input type="text" id="symptom" name="Symptom" value="{{ symptoms_input }}"
-            placeholder="e.g., fever, cough, shortness of breath">
-        <input type="submit" value="Diagnose">
-    </div>
-</form>
+<section class="diagnose">
+    <h2>AI Symptom Diagnosis</h2>
+    <p class="subtitle">Enter symptoms separated by commas (e.g., fever, cough, headache)</p>
 
-<!-- Diagnosis Results -->
-{% if diseases %}
-<h2>Matching Diseases:</h2>
-<ul class="disease-list">
-    {% for disease in diseases %}
-    <li>{{ disease }}
-        <form action="/remedies" method="POST" class="remedies-form">
-            <input type="hidden" name="Disease" value="{{ disease }}">
-            <button type="submit" class="remedies-button">Get Remedies</button>
-        </form>
-    </li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No matching diseases found.</p>
-{% endif %}
-{% endblock content %}
+    <form id="diagnoseForm">
+        <textarea id="symptoms" name="symptoms" rows="5" placeholder="e.g. fever, cough, headache"></textarea>
+        <br>
+        <button type="submit">Get Diagnosis</button>
+    </form>
+
+    <div id="loading" style="display:none;">🔍 Analyzing... please wait.</div>
+    <div id="results"></div>
+</section>
+
+<script>
+document.getElementById('diagnoseForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const input = document.getElementById('symptoms').value.trim();
+    if (!input) {
+        alert('Please enter at least one symptom.');
+        return;
+    }
+
+    document.getElementById('results').innerHTML = '';
+    document.getElementById('loading').style.display = 'block';
+
+    try {
+        const payload = { symptoms: input.includes(',') ? input.split(',').map(s => s.trim()) : input };
+        const resp = await fetch('/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await resp.json();
+        document.getElementById('loading').style.display = 'none';
+
+        if (data.error) {
+            document.getElementById('results').innerHTML = `<p class="error">${data.error}</p>`;
+            return;
+        }
+
+        const results = data.results || [];
+        let html = `<h3>Results (${data.source})</h3>`;
+        html += `<table class="results-table"><thead><tr><th>Rank</th><th>Disease</th><th>Confidence</th><th>Remedy</th></tr></thead><tbody>`;
+        results.forEach((r, i) => {
+            html += `<tr><td>${i+1}</td><td>${r.Disease}</td><td>${r.Confidence}</td><td>${r.Remedy}</td></tr>`;
+        });
+        html += `</tbody></table>`;
+        document.getElementById('results').innerHTML = html;
+    } catch (err) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('results').innerHTML = `<p class="error">Something went wrong. Try again.</p>`;
+        console.error(err);
+    }
+});
+</script>
+{% endblock %}
