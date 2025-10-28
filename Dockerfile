@@ -1,30 +1,18 @@
 FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PORT=5000
+    PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    gcc \
+RUN apt-get update && apt-get install -y build-essential libpq-dev gcc \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /app/requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN python -m pip install --upgrade pip setuptools wheel \
- && pip install --no-cache-dir -r /app/requirements.txt
-
-COPY . /app
-
-RUN chmod -R a+r /app
+COPY . .
 
 EXPOSE 5000
 
-RUN useradd --create-home appuser && chown -R appuser /app
-USER appuser
-ENV PATH="/home/appuser/.local/bin:${PATH}"
-
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "run:app", "--timeout", "120"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:$PORT", "run:app", "--timeout", "120"]
