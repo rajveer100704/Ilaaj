@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="center">
-    <h2>Welcome to Ilaaj</h2>
-    <p>Enter your symptoms and get quick disease suggestions and remedies.</p>
-    <a class="btn" href="{{ url_for('diagnose_page') }}">Start Diagnosis</a>
-</section>
+<div class="home-page">
+    <h1>Welcome to Ilaaj 🩺</h1>
+    <p>Your AI-powered health companion for diagnosis and remedies.</p>
+    <a href="{{ url_for('diagnose') }}"><button>Start Diagnosis</button></a>
+</div>
 {% endblock %}
