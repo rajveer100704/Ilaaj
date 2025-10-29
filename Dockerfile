@@ -15,5 +15,5 @@ COPY . /app
 
 EXPOSE 5000
 
-# Use shell form so $PORT expands at runtime on Render
+# Use shell form so Render expands $PORT
 CMD gunicorn -w 4 -b 0.0.0.0:$PORT run:app --timeout 120
