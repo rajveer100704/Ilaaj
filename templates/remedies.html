@@ -1,38 +1,19 @@
 <!-- templates/remedies.html -->
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Remedies — Ilaaj</title>
-  <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-  <header class="nav">
-    <div class="brand">Ilaaj <span class="brand-emoji">🩺</span></div>
-    <nav>
-      <a href="/" class="nav-link">Home</a>
-      <a href="/diagnose" class="nav-link">Diagnose</a>
-      <a href="/remedies" class="nav-link active">Remedies</a>
-    </nav>
-  </header>
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-white rounded-lg p-6 shadow">
+  <h2 class="text-2xl font-semibold mb-2">Remedies</h2>
+  <p class="text-sm text-gray-600 mb-4">View remedies for a disease (or open this page from Diagnose by clicking "View Remedies").</p>
 
-  <main class="center">
-    <div class="card">
-      <h2>Remedies & Suggestions</h2>
-      <p class="muted">You can get remedies for the top 10 diseases detected or type a disease name.</p>
+  <div class="flex gap-3 mb-4">
+    <input id="disease" placeholder="Type disease name (or leave blank if coming from Diagnose)" class="flex-1 p-3 border rounded" />
+    <button id="fetch-remedies" class="px-4 py-2 bg-indigo-600 text-white rounded">Get Remedies</button>
+  </div>
 
-      <div class="input-row">
-        <input id="diseaseInput" placeholder="Type disease name (or leave blank to use previous diagnosis)" />
-        <button id="getRemediesBtn" class="btn primary">Get Remedies</button>
-      </div>
+  <div id="remedies-area" class="space-y-4">
+    <div class="text-gray-500">Enter a disease name and click Get Remedies, or click a disease's 'View Remedies' from Diagnose page.</div>
+  </div>
+</div>
 
-      <div id="remediesArea" class="results-grid"></div>
-    </div>
-  </main>
-
-  <footer class="footer"><small>© 2025 Ilaaj</small></footer>
-
-  <script src="/static/js/remedies.js"></script>
-</body>
-</html>
+<script src="/static/js/remedies.js"></script>
+{% endblock %}
