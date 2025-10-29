@@ -1,8 +1,27 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="hero card">
-  <h1>Welcome to Ilaaj</h1>
-  <p class="lead">Quick symptom-based disease suggestions & remedies — local DB + AI fallback.</p>
-  <a class="btn" href="{{ url_for('diagnose') }}">Start Diagnosis</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ilaaj 🩺 | AI Health Assistant</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<nav>
+  <div>Ilaaj 🩺</div>
+  <div>
+    <a href="/">Home</a>
+    <a href="/diagnose">Diagnose</a>
+    <a href="/remedies">Remedies</a>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>Welcome to Ilaaj 🩺</h1>
+  <p><b>Your AI-powered health companion.</b> Describe your symptoms and get instant possible diagnoses and remedies backed by intelligent AI and verified medical data.</p>
+  <p style="color:gray;">⚠️ Disclaimer: Ilaaj is not a replacement for a licensed medical professional. Always consult your doctor for medical advice.</p>
+  <button onclick="window.location='/diagnose'">🚀 Start Diagnosis</button>
 </div>
-{% endblock %}
+
+<footer>© 2025 Ilaaj | Smart AI Health Assistant</footer>
+</body>
+</html>
