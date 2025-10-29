@@ -10,13 +10,13 @@
     <div id="loading" class="muted" style="display:none">Analyzing…</div>
   </div>
 
-  <div id="resultsArea"></div>
+  <div id="resultsArea" style="margin-top:18px"></div>
 </section>
 
 <script>
 function createCardHtml(item, idx) {
-  const score = item.Score !== undefined ? item.Score.toFixed(1) : (item.Score || 0);
-  const disease = item.Disease;
+  const score = item.Score !== undefined ? Number(item.Score) : 0;
+  const disease = item.Disease || "Unknown";
   const encoded = encodeURIComponent(disease);
   return `
     <div class="result-card">
@@ -49,7 +49,6 @@ document.getElementById("diagnoseBtn").addEventListener("click", async () => {
   resultsArea.innerHTML = "";
 
   try {
-    // normalize: if user enters comma-separated string, send string
     const payload = { symptoms: raw };
 
     const resp = await fetch("/api/diagnose", {
@@ -67,13 +66,12 @@ document.getElementById("diagnoseBtn").addEventListener("click", async () => {
       if (results.length === 0) {
         resultsArea.innerHTML = `<div class="alert">No results found.</div>`;
       } else {
-        // show top 10 cards
         let html = `<div class="results-grid">`;
         results.slice(0,10).forEach((it, i) => {
           html += createCardHtml(it, i);
         });
         html += `</div>`;
-        html += `<div class="muted small">Source: ${source}</div>`;
+        html += `<div class="muted small" style="margin-top:10px">Source: ${source}</div>`;
         resultsArea.innerHTML = html;
       }
     }
