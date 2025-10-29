@@ -1,46 +1,40 @@
-<!DOCTYPE html>
+<!-- templates/diagnose.html -->
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Diagnose | Ilaaj 🩺</title>
-<link rel="stylesheet" href="/static/style.css">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Diagnose — Ilaaj</title>
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-<nav>
-  <div>Ilaaj 🩺</div>
-  <div>
-    <a href="/">Home</a>
-    <a href="/diagnose">Diagnose</a>
-    <a href="/remedies">Remedies</a>
-  </div>
-</nav>
+  <header class="nav">
+    <div class="brand">Ilaaj <span class="brand-emoji">🩺</span></div>
+    <nav>
+      <a href="/" class="nav-link">Home</a>
+      <a href="/diagnose" class="nav-link active">Diagnose</a>
+      <a href="/remedies" class="nav-link">Remedies</a>
+    </nav>
+  </header>
 
-<div class="container">
-  <h1>AI Symptom Diagnosis</h1>
-  <p>Enter your symptoms (comma separated):</p>
-  <form id="diagnoseForm">
-    <textarea name="symptoms" id="symptoms" rows="3" style="width:100%; border-radius:10px;"></textarea><br><br>
-    <button type="submit">🔍 Diagnose</button>
-  </form>
-  <div id="result" class="result-box" style="display:none;"></div>
-</div>
+  <main class="center">
+    <div class="card chat-card">
+      <h2>AI Symptom Diagnosis</h2>
+      <p class="muted">Enter symptoms (comma separated). We will show top 10 likely diseases with confidence percentages.</p>
 
-<footer>© 2025 Ilaaj | Smart AI Health Assistant</footer>
+      <div class="input-row">
+        <textarea id="symptoms" placeholder="e.g., cough, fever, sore throat"></textarea>
+        <button id="diagnoseBtn" class="btn primary">Diagnose</button>
+      </div>
 
-<script>
-document.getElementById("diagnoseForm").addEventListener("submit", async(e)=>{
-  e.preventDefault();
-  const data = new FormData(e.target);
-  const res = await fetch("/diagnose", {method:"POST", body:data});
-  const json = await res.json();
-  let html = "<h3>Top 10 Possible Diseases:</h3><ul>";
-  json.results.forEach(r=>{
-    html += `<li><b>${r.disease}</b> — ${r.score}% chance</li>`;
-  });
-  html += "</ul>";
-  document.getElementById("result").style.display="block";
-  document.getElementById("result").innerHTML=html;
-});
-</script>
+      <div id="chatArea" class="chat-area">
+        <!-- chat messages will appear here -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer"><small>© 2025 Ilaaj</small></footer>
+
+  <script src="/static/js/diagnose.js"></script>
 </body>
 </html>
