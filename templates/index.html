@@ -1,27 +1,38 @@
-<!DOCTYPE html>
+<!-- templates/index.html -->
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Ilaaj 🩺 | AI Health Assistant</title>
-<link rel="stylesheet" href="/static/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ilaaj — AI Health Assistant</title>
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-<nav>
-  <div>Ilaaj 🩺</div>
-  <div>
-    <a href="/">Home</a>
-    <a href="/diagnose">Diagnose</a>
-    <a href="/remedies">Remedies</a>
-  </div>
-</nav>
+  <header class="nav">
+    <div class="brand">Ilaaj <span class="brand-emoji">🩺</span></div>
+    <nav>
+      <a href="/" class="nav-link">Home</a>
+      <a href="/diagnose" class="nav-link">Diagnose</a>
+      <a href="/remedies" class="nav-link">Remedies</a>
+    </nav>
+  </header>
 
-<div class="container">
-  <h1>Welcome to Ilaaj 🩺</h1>
-  <p><b>Your AI-powered health companion.</b> Describe your symptoms and get instant possible diagnoses and remedies backed by intelligent AI and verified medical data.</p>
-  <p style="color:gray;">⚠️ Disclaimer: Ilaaj is not a replacement for a licensed medical professional. Always consult your doctor for medical advice.</p>
-  <button onclick="window.location='/diagnose'">🚀 Start Diagnosis</button>
-</div>
+  <main class="hero center">
+    <div class="hero-card">
+      <h1>Ilaaj — Your AI Health Companion</h1>
+      <p class="lead">Enter symptoms and get intelligent, dataset-backed diagnosis suggestions. If the dataset doesn't match, our AI will provide expert fallback suggestions.</p>
 
-<footer>© 2025 Ilaaj | Smart AI Health Assistant</footer>
+      <div class="cta-row">
+        <a class="btn primary pulse" href="/diagnose">Start Diagnosis</a>
+        <a class="btn secondary" href="/remedies">Explore Remedies</a>
+      </div>
+
+      <p class="disclaimer">⚠️ Disclaimer: Ilaaj is an informational assistant — not a replacement for professional medical advice.</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <small>© 2025 Ilaaj — Built responsibly for learning & prototyping</small>
+  </footer>
 </body>
 </html>
