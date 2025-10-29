@@ -1,21 +1,20 @@
-<!-- templates/diagnose.html -->
 {% extends "base.html" %}
 {% block content %}
-<div class="bg-white rounded-lg p-6 shadow">
-  <h2 class="text-2xl font-semibold mb-2">AI Symptom Diagnosis</h2>
-  <p class="text-sm text-gray-600 mb-4">Enter symptoms separated by commas (e.g., cough, fever, headache)</p>
+<div class="glass-card p-6 max-w-3xl mx-auto">
+  <h2 class="text-2xl font-semibold mb-3">Diagnose</h2>
+  <p class="text-slate-600 mb-4">Enter symptoms (comma separated). We'll show top 10 likely diseases with confidence.</p>
 
-  <textarea id="symptoms" rows="3" class="w-full p-3 border rounded mb-3" placeholder="e.g., fever, cough"></textarea>
-  <div class="flex items-center gap-4">
-    <button id="diagnose-btn" class="px-5 py-2 bg-indigo-600 text-white rounded">Diagnose</button>
-    <div id="diagnose-status" class="text-sm text-gray-500"></div>
+  <textarea id="symptoms" rows="3" class="w-full border p-3 rounded mb-3" placeholder="e.g., cold, severe headache"></textarea>
+  <div class="flex items-center gap-3">
+    <button id="diagnose-btn" class="px-4 py-2 bg-sky-600 text-white rounded">Diagnose</button>
+    <div id="diagnose-status" class="text-slate-500"></div>
   </div>
 
   <section id="results" class="mt-6 hidden">
     <h3 class="font-semibold mb-3">Top matches (showing top 10):</h3>
     <ol id="matches" class="list-decimal ml-6 space-y-3"></ol>
 
-    <div id="detailed" class="mt-6 space-y-4"></div>
+    <div id="detailed" class="mt-6 grid gap-4"></div>
   </section>
 </div>
 
