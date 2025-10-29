@@ -1,87 +1,46 @@
-{% extends "base.html" %}
-{% block content %}
-<section class="card">
-  <h2>AI Symptom Diagnosis</h2>
-  <p class="muted">Enter symptoms separated by commas (e.g., cough, fever, headache)</p>
-
-  <textarea id="symptoms" placeholder="e.g., fever, cough" rows="3"></textarea>
-  <div class="row">
-    <button id="diagnoseBtn" class="btn">Diagnose</button>
-    <div id="loading" class="muted" style="display:none">Analyzing…</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Diagnose | Ilaaj 🩺</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<nav>
+  <div>Ilaaj 🩺</div>
+  <div>
+    <a href="/">Home</a>
+    <a href="/diagnose">Diagnose</a>
+    <a href="/remedies">Remedies</a>
   </div>
+</nav>
 
-  <div id="resultsArea" style="margin-top:18px"></div>
-</section>
+<div class="container">
+  <h1>AI Symptom Diagnosis</h1>
+  <p>Enter your symptoms (comma separated):</p>
+  <form id="diagnoseForm">
+    <textarea name="symptoms" id="symptoms" rows="3" style="width:100%; border-radius:10px;"></textarea><br><br>
+    <button type="submit">🔍 Diagnose</button>
+  </form>
+  <div id="result" class="result-box" style="display:none;"></div>
+</div>
+
+<footer>© 2025 Ilaaj | Smart AI Health Assistant</footer>
 
 <script>
-function createCardHtml(item, idx) {
-  const score = item.Score !== undefined ? Number(item.Score) : 0;
-  const disease = item.Disease || "Unknown";
-  const encoded = encodeURIComponent(disease);
-  return `
-    <div class="result-card">
-      <div class="result-head">
-        <div class="disease">${idx+1}. ${disease}</div>
-        <div class="score">${score}%</div>
-      </div>
-      <div class="score-bar">
-        <div class="score-fill" style="width: ${score}%;"></div>
-      </div>
-      <div class="card-actions">
-        <a class="btn small" href="/remedies?disease=${encoded}">Remedies</a>
-      </div>
-    </div>
-  `;
-}
-
-document.getElementById("diagnoseBtn").addEventListener("click", async () => {
-  const btn = document.getElementById("diagnoseBtn");
-  const loading = document.getElementById("loading");
-  const resultsArea = document.getElementById("resultsArea");
-  const raw = document.getElementById("symptoms").value.trim();
-  if (!raw) {
-    alert("Please enter symptoms (comma separated).");
-    return;
-  }
-
-  btn.disabled = true;
-  loading.style.display = "inline-block";
-  resultsArea.innerHTML = "";
-
-  try {
-    const payload = { symptoms: raw };
-
-    const resp = await fetch("/api/diagnose", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await resp.json();
-    if (data.error) {
-      resultsArea.innerHTML = `<div class="alert">${data.error}</div>`;
-    } else {
-      const source = data.source || "db";
-      const results = data.results || [];
-      if (results.length === 0) {
-        resultsArea.innerHTML = `<div class="alert">No results found.</div>`;
-      } else {
-        let html = `<div class="results-grid">`;
-        results.slice(0,10).forEach((it, i) => {
-          html += createCardHtml(it, i);
-        });
-        html += `</div>`;
-        html += `<div class="muted small" style="margin-top:10px">Source: ${source}</div>`;
-        resultsArea.innerHTML = html;
-      }
-    }
-  } catch (err) {
-    console.error(err);
-    resultsArea.innerHTML = `<div class="alert">Server error. Try again later.</div>`;
-  } finally {
-    btn.disabled = false;
-    loading.style.display = "none";
-  }
+document.getElementById("diagnoseForm").addEventListener("submit", async(e)=>{
+  e.preventDefault();
+  const data = new FormData(e.target);
+  const res = await fetch("/diagnose", {method:"POST", body:data});
+  const json = await res.json();
+  let html = "<h3>Top 10 Possible Diseases:</h3><ul>";
+  json.results.forEach(r=>{
+    html += `<li><b>${r.disease}</b> — ${r.score}% chance</li>`;
+  });
+  html += "</ul>";
+  document.getElementById("result").style.display="block";
+  document.getElementById("result").innerHTML=html;
 });
 </script>
-{% endblock %}
+</body>
+</html>
