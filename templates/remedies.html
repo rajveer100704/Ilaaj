@@ -1,45 +1,38 @@
-<!DOCTYPE html>
+<!-- templates/remedies.html -->
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Remedies | Ilaaj 🩺</title>
-<link rel="stylesheet" href="/static/style.css">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Remedies — Ilaaj</title>
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-<nav>
-  <div>Ilaaj 🩺</div>
-  <div>
-    <a href="/">Home</a>
-    <a href="/diagnose">Diagnose</a>
-    <a href="/remedies">Remedies</a>
-  </div>
-</nav>
+  <header class="nav">
+    <div class="brand">Ilaaj <span class="brand-emoji">🩺</span></div>
+    <nav>
+      <a href="/" class="nav-link">Home</a>
+      <a href="/diagnose" class="nav-link">Diagnose</a>
+      <a href="/remedies" class="nav-link active">Remedies</a>
+    </nav>
+  </header>
 
-<div class="container">
-  <h1>AI Remedies & Suggestions</h1>
-  <p>Enter symptoms or diseases to get tailored remedies:</p>
-  <form id="remedyForm">
-    <textarea name="symptoms" rows="3" style="width:100%; border-radius:10px;"></textarea><br><br>
-    <button type="submit">💊 Get Remedies</button>
-  </form>
-  <div id="result" class="result-box" style="display:none;"></div>
-</div>
+  <main class="center">
+    <div class="card">
+      <h2>Remedies & Suggestions</h2>
+      <p class="muted">You can get remedies for the top 10 diseases detected or type a disease name.</p>
 
-<footer>© 2025 Ilaaj | Smart AI Health Assistant</footer>
+      <div class="input-row">
+        <input id="diseaseInput" placeholder="Type disease name (or leave blank to use previous diagnosis)" />
+        <button id="getRemediesBtn" class="btn primary">Get Remedies</button>
+      </div>
 
-<script>
-document.getElementById("remedyForm").addEventListener("submit", async(e)=>{
-  e.preventDefault();
-  const data = new FormData(e.target);
-  const res = await fetch("/remedies", {method:"POST", body:data});
-  const json = await res.json();
-  let html = "<h3>Recommended Remedies:</h3>";
-  json.remedies.forEach(r=>{
-    html += `<div><b>${r.disease}</b>: ${r.remedies.join(", ")}</div>`;
-  });
-  document.getElementById("result").style.display="block";
-  document.getElementById("result").innerHTML=html;
-});
-</script>
+      <div id="remediesArea" class="results-grid"></div>
+    </div>
+  </main>
+
+  <footer class="footer"><small>© 2025 Ilaaj</small></footer>
+
+  <script src="/static/js/remedies.js"></script>
 </body>
 </html>
