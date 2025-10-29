@@ -1,40 +1,23 @@
 <!-- templates/diagnose.html -->
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Diagnose — Ilaaj</title>
-  <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-  <header class="nav">
-    <div class="brand">Ilaaj <span class="brand-emoji">🩺</span></div>
-    <nav>
-      <a href="/" class="nav-link">Home</a>
-      <a href="/diagnose" class="nav-link active">Diagnose</a>
-      <a href="/remedies" class="nav-link">Remedies</a>
-    </nav>
-  </header>
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-white rounded-lg p-6 shadow">
+  <h2 class="text-2xl font-semibold mb-2">AI Symptom Diagnosis</h2>
+  <p class="text-sm text-gray-600 mb-4">Enter symptoms separated by commas (e.g., cough, fever, headache)</p>
 
-  <main class="center">
-    <div class="card chat-card">
-      <h2>AI Symptom Diagnosis</h2>
-      <p class="muted">Enter symptoms (comma separated). We will show top 10 likely diseases with confidence percentages.</p>
+  <textarea id="symptoms" rows="3" class="w-full p-3 border rounded mb-3" placeholder="e.g., fever, cough"></textarea>
+  <div class="flex items-center gap-4">
+    <button id="diagnose-btn" class="px-5 py-2 bg-indigo-600 text-white rounded">Diagnose</button>
+    <div id="diagnose-status" class="text-sm text-gray-500"></div>
+  </div>
 
-      <div class="input-row">
-        <textarea id="symptoms" placeholder="e.g., cough, fever, sore throat"></textarea>
-        <button id="diagnoseBtn" class="btn primary">Diagnose</button>
-      </div>
+  <section id="results" class="mt-6 hidden">
+    <h3 class="font-semibold mb-3">Top matches (showing top 10):</h3>
+    <ol id="matches" class="list-decimal ml-6 space-y-3"></ol>
 
-      <div id="chatArea" class="chat-area">
-        <!-- chat messages will appear here -->
-      </div>
-    </div>
-  </main>
+    <div id="detailed" class="mt-6 space-y-4"></div>
+  </section>
+</div>
 
-  <footer class="footer"><small>© 2025 Ilaaj</small></footer>
-
-  <script src="/static/js/diagnose.js"></script>
-</body>
-</html>
+<script src="/static/js/diagnose.js"></script>
+{% endblock %}
