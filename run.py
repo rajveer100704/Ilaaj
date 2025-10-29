@@ -1,22 +1,22 @@
 import os
 import json
 import traceback
-from urllib.parse import quote, unquote
+from urllib.parse import unquote
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from rapidfuzz import fuzz
 import redis
 
-# Optional Gemini imports (if you don't want to enable Gemini, app still works)
+# Try to import google generative ai SDK (optional)
 try:
     import google.generativeai as genai
-    GEMINI_AVAILABLE = True
+    GEMINI_SDK_AVAILABLE = True
 except Exception:
-    GEMINI_AVAILABLE = False
+    GEMINI_SDK_AVAILABLE = False
 
 app = Flask(__name__)
 
-# ---------- Optional Redis ----------
+# ---------- Redis (optional) ----------
 redis_url = os.environ.get("REDIS_URL")
 redis_client = None
 if redis_url:
@@ -30,41 +30,64 @@ if redis_url:
 else:
     print("⚠️ No REDIS_URL found. Redis disabled.")
 
-# ---------- Configure Gemini if present ----------
+# ---------- Gemini config (optional) ----------
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-if GEMINI_API_KEY and GEMINI_AVAILABLE:
-    genai.configure(api_key=GEMINI_API_KEY)
-    print("✅ Gemini configured")
+# A prioritized list of candidate model IDs to try (keeps code robust)
+GEMINI_MODEL_CANDIDATES = [
+    "gemini-2.5-pro",
+    "gemini-2.5-flash",
+    "gemini-1.5-pro",
+    "gemini-1.5-flash",
+    "chat-bison-001"  # fallback name (older)
+]
+
+active_gemini_model = None
+if GEMINI_API_KEY and GEMINI_SDK_AVAILABLE:
+    try:
+        genai.configure(api_key=GEMINI_API_KEY)
+        # We'll lazily try models when we need to call them
+        print("✅ Gemini SDK configured (model will be probed at runtime).")
+    except Exception as e:
+        print("⚠️ Gemini configure failed:", e)
 else:
-    if GEMINI_API_KEY and not GEMINI_AVAILABLE:
-        print("⚠️ google-generativeai library missing; install it to use Gemini fallback.")
+    if GEMINI_API_KEY and not GEMINI_SDK_AVAILABLE:
+        print("⚠️ GEMINI_API_KEY provided but google-generativeai lib is not installed.")
     else:
         print("⚠️ No GEMINI_API_KEY provided; Gemini fallback disabled.")
 
-# ---------- Load local disease DB ----------
+
+# ---------- Load database (diseases.json) ----------
 DB_PATH = os.path.join(os.path.dirname(__file__), "database", "diseases.json")
 if os.path.exists(DB_PATH):
-    with open(DB_PATH, "r", encoding="utf-8") as f:
-        try:
+    try:
+        with open(DB_PATH, "r", encoding="utf-8") as f:
             DISEASE_DB = json.load(f)
-        except Exception:
-            DISEASE_DB = []
-            print("⚠️ Failed to load database/diseases.json - invalid JSON")
+            print(f"✅ Loaded {len(DISEASE_DB)} diseases from database/diseases.json")
+    except Exception as e:
+        DISEASE_DB = []
+        print("⚠️ Failed to parse database/diseases.json:", e)
 else:
     DISEASE_DB = []
-    print("⚠️ database/diseases.json not found; DB is empty. Gemini fallback will be used when available.")
+    print("⚠️ database/diseases.json not found; using small builtin sample.")
+    # minimal fallback sample so app can return something
+    DISEASE_DB = [
+        {"Disease": "Common Cold", "Symptom": ["sneezing", "runny nose", "sore throat", "cough"]},
+        {"Disease": "Flu", "Symptom": ["fever", "cough", "body aches"]},
+        {"Disease": "COVID-19", "Symptom": ["fever", "cough", "shortness of breath"]},
+        {"Disease": "Pneumonia", "Symptom": ["cough", "fever", "difficulty breathing"]},
+        {"Disease": "Asthma", "Symptom": ["wheezing", "coughing", "shortness of breath"]}
+    ]
 
 
+# ---------- utilities ----------
 def normalize_symptom_text(s):
     return s.strip().lower()
 
 
 def score_against_disease(user_symptoms, disease_symptoms):
     """
-    user_symptoms: list[str] (normalized)
-    disease_symptoms: list[str] (original from DB)
-    Returns: score between 0..100
-    We'll compute per-user-symptom best fuzzy match to disease_symptoms and average.
+    Score user_symptoms (list of normalized strings) against disease_symptoms (list).
+    Returns float score 0..100.
     """
     if not disease_symptoms:
         return 0.0
@@ -72,91 +95,102 @@ def score_against_disease(user_symptoms, disease_symptoms):
     for us in user_symptoms:
         best = 0
         for ds in disease_symptoms:
-            # normalize disease symptom
             ds_norm = ds.strip().lower()
-            # use partial_ratio to handle substrings; use token_sort_ratio for multi-word
             s1 = fuzz.partial_ratio(us, ds_norm)
             s2 = fuzz.token_sort_ratio(us, ds_norm)
             local_best = max(s1, s2)
             if local_best > best:
                 best = local_best
         scores.append(best)
-    # average of per-symptom bests
-    avg = sum(scores) / len(scores)
-    return float(avg)
+    return float(sum(scores) / len(scores))
 
 
 def top_matches_from_db(user_input_list, top_n=10):
-    """
-    Returns list of dicts: {"Disease": name, "Score": float(0-100)}
-    """
     results = []
     for entry in DISEASE_DB:
         disease_name = entry.get("Disease", "Unknown")
-        disease_symptoms = entry.get("Symptom", [])  # list
-        # compute score
+        disease_symptoms = entry.get("Symptom", [])
         s = score_against_disease(user_input_list, disease_symptoms)
         results.append({"Disease": disease_name, "Score": round(s, 2)})
-    # sort desc
     results_sorted = sorted(results, key=lambda x: x["Score"], reverse=True)
     return results_sorted[:top_n]
 
 
+# ---------- Gemini helper (robust to model names) ----------
+def _try_gemini_generate(prompt, candidate_models=None):
+    """
+    Try generate_content using candidate_models in order.
+    Returns text or raises.
+    """
+    if not GEMINI_API_KEY or not GEMINI_SDK_AVAILABLE:
+        raise RuntimeError("Gemini not configured or SDK missing")
+
+    candidates = candidate_models or GEMINI_MODEL_CANDIDATES
+    last_exc = None
+    for m in candidates:
+        try:
+            model = genai.GenerativeModel(m)
+            resp = model.generate_content(prompt)
+            text = getattr(resp, "text", None) or str(resp)
+            # remember the working model
+            global active_gemini_model
+            active_gemini_model = m
+            print(f"✅ Gemini model {m} worked.")
+            return text
+        except Exception as e:
+            last_exc = e
+            print(f"⚠️ Gemini model {m} failed:", e)
+            continue
+    # if none worked, raise the last one
+    raise last_exc if last_exc else RuntimeError("No Gemini model available")
+
+
 def gemini_query_for_diseases(symptoms_text, top_n=10):
     """
-    Ask Gemini for top N possible diseases for given symptoms.
-    Returns list of {"Disease": name, "Score": float}
+    Ask Gemini for top N diseases as JSON-like array.
+    Returns list of dicts {"Disease":..., "Score":...} or [] on failure.
     """
-    if not GEMINI_API_KEY or not GEMINI_AVAILABLE:
+    if not GEMINI_API_KEY or not GEMINI_SDK_AVAILABLE:
         return []
 
-    prompt = f"""You are a medical assistant. Given the following symptoms (short): "{symptoms_text}", 
-return a JSON array of up to {top_n} possible diseases with a confidence percentage (0-100). 
-Format exactly as a JSON array of objects like:
-[{{"Disease": "Name1", "Score": 87.5}}, {{"Disease": "Name2", "Score": 65.2}}]
-Do NOT include explanatory text outside the JSON.
-If you are unsure, give approximate percentages.
-"""
+    prompt = (
+        f"You are a medical assistant. Given these symptoms: \"{symptoms_text}\", "
+        f"return a JSON array (no extra text) of up to {top_n} possible diseases "
+        "with a confidence percentage 0-100, like: "
+        '[{"Disease":"Name","Score":87.5},{"Disease":"Name2","Score":65.2}].'
+    )
     try:
-        model = genai.GenerativeModel("gemini-pro")
-        response = model.generate_content(prompt)
-        text = getattr(response, "text", None) or str(response)
-        # try to find a JSON array inside text
+        raw = _try_gemini_generate(prompt, GEMINI_MODEL_CANDIDATES)
+        # try extract JSON array if extra text present
         import re
-        match = re.search(r"(\[\s*\{.*\}\s*\])", text, re.S)
-        json_text = match.group(1) if match else text
+        match = re.search(r"(\[\s*\{.*\}\s*\])", raw, re.S)
+        json_text = match.group(1) if match else raw
         parsed = json.loads(json_text)
-        # ensure list of dicts with Disease and Score
-        parsed_clean = []
-        for item in parsed:
-            name = item.get("Disease") or item.get("disease") or str(item)
-            score = float(item.get("Score") or item.get("score") or 0)
-            parsed_clean.append({"Disease": name, "Score": round(score, 2)})
-        return parsed_clean[:top_n]
+        results = []
+        for it in parsed:
+            name = it.get("Disease") or it.get("disease") or str(it)
+            score = float(it.get("Score") or it.get("score") or 0)
+            results.append({"Disease": name, "Score": round(score, 2)})
+        return results[:top_n]
     except Exception as e:
         print("⚠️ Gemini disease query failed:", e)
         return []
 
 
 def gemini_query_for_remedies(disease_name):
-    """
-    Ask Gemini to provide home remedies for a disease.
-    Returns a string (short remedies).
-    """
-    if not GEMINI_API_KEY or not GEMINI_AVAILABLE:
-        return "No remedies available (Gemini not configured)."
-    prompt = f"""You are a professional medical assistant. Provide concise, safe home remedies and
-basic non-prescription care suggestions for someone who likely has: "{disease_name}".
-Return the answer as plain text, short bullet points (3-6 items). Avoid prescribing medication.
-"""
+    if not GEMINI_API_KEY or not GEMINI_SDK_AVAILABLE:
+        return None
+    prompt = (
+        f"You are a professional medical assistant. Provide 4-6 short, safe home remedies and "
+        f"self-care recommendations for someone with: \"{disease_name}\". Keep it concise, avoid prescribing medication. "
+        "Return plain text bullet points."
+    )
     try:
-        model = genai.GenerativeModel("gemini-pro")
-        response = model.generate_content(prompt)
-        text = getattr(response, "text", None) or str(response)
-        return text.strip()
+        raw = _try_gemini_generate(prompt, GEMINI_MODEL_CANDIDATES)
+        return raw.strip()
     except Exception as e:
         print("⚠️ Gemini remedy query failed:", e)
-        return "No remedies available (Gemini query failed)."
+        return None
 
 
 # ---------- Routes ----------
@@ -173,60 +207,58 @@ def diagnose():
 @app.route("/api/diagnose", methods=["POST"])
 def api_diagnose():
     """
-    Accepts JSON: {"symptoms": "fever, cough"} or {"symptoms": ["fever","cough"]}
-    Returns: {"source":"db"|"gemini"|"mixed", "results":[{"Disease":..,"Score":..},...]}
+    Input JSON: {"symptoms": "cough, fever"} or {"symptoms": ["cough","fever"]}
+    Response: {"source":"db"|"gemini"|"cache", "results":[{"Disease":..,"Score":..},...]}
     """
     try:
         payload = request.get_json(force=True)
         if not payload:
             return jsonify({"error": "Empty request"}), 400
-        raw = payload.get("symptoms") or payload.get("symptom") or ""
-        # normalize input into list of strings
-        if isinstance(raw, list):
-            user_sym_list = [normalize_symptom_text(s) for s in raw if s]
-            symptoms_text = ", ".join(user_sym_list)
-        else:
-            # raw string, comma separated
-            parts = [p.strip() for p in str(raw).split(",") if p.strip()]
-            user_sym_list = [normalize_symptom_text(p) for p in parts]
-            symptoms_text = ", ".join(user_sym_list)
 
-        if len(user_sym_list) == 0:
+        raw = payload.get("symptoms") or payload.get("symptom") or ""
+        if isinstance(raw, list):
+            parts = [str(x).strip() for x in raw if str(x).strip()]
+        else:
+            parts = [p.strip() for p in str(raw).split(",") if p.strip()]
+
+        user_sym_list = [normalize_symptom_text(p) for p in parts]
+
+        if not user_sym_list:
             return jsonify({"error": "No symptoms provided"}), 400
 
-        # cache key
+        symptoms_text = ", ".join(user_sym_list)
         cache_key = f"diagnose:{symptoms_text}"
+        # Try cache
         if redis_client:
-            cached = redis_client.get(cache_key)
-            if cached:
-                try:
+            try:
+                cached = redis_client.get(cache_key)
+                if cached:
                     return jsonify({"source": "cache", "results": json.loads(cached.decode("utf-8"))})
-                except Exception:
-                    pass
+            except Exception:
+                pass
 
-        # compute matches from DB
-        db_matches = top_matches_from_db(user_sym_list, top_n=50)  # compute more, we'll choose top10
-        # decide threshold: if top db match score >= 50 -> use DB results
-        top_db_score = db_matches[0]["Score"] if db_matches else 0
+        # DB scoring (compute a larger top list, then choose top 10)
+        db_matches = top_matches_from_db(user_sym_list, top_n=50)
+        top_db_score = db_matches[0]["Score"] if db_matches else 0.0
 
         results = []
         source = "db"
+        # if DB top score is reasonably strong, use DB
         if top_db_score >= 40:
-            # return top 10 from DB
             results = db_matches[:10]
             source = "db"
         else:
-            # fallback to Gemini if available
+            # try Gemini fallback
             gem = gemini_query_for_diseases(symptoms_text, top_n=10)
             if gem:
                 results = gem
                 source = "gemini"
             else:
-                # return best efforts from DB (still top 10 even if low)
+                # fall back to DB even if scores low
                 results = db_matches[:10]
                 source = "db"
 
-        # cache
+        # Cache results
         if redis_client:
             try:
                 redis_client.setex(cache_key, 3600, json.dumps(results))
@@ -234,7 +266,6 @@ def api_diagnose():
                 pass
 
         return jsonify({"source": source, "results": results})
-
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": "Internal server error", "details": str(e)}), 500
@@ -243,49 +274,52 @@ def api_diagnose():
 @app.route("/remedies")
 def remedies():
     """
-    Query param: ?disease=Name%20Here
+    Expects ?disease=Name
     """
     disease = request.args.get("disease", "")
     if not disease:
         return redirect(url_for("diagnose"))
     disease = unquote(disease)
-    # try local simple mapping (you can create a local remedies DB later)
+
+    # local remedies map (small)
     local_remedy_db = {
-        # a few quick local examples; Gemini will be used if not present
         "Common Cold": "Rest, warm fluids, steam inhalation, honey for cough.",
-        "Flu": "Hydration, rest, paracetamol for fever, consult doctor if breathless.",
+        "Flu": "Hydration, rest, paracetamol for fever (if advised), consult if breathless.",
         "COVID-19": "Isolation, monitor oxygen, seek medical care if breathing difficulty.",
-        "Asthma": "Use inhaler as prescribed; avoid triggers; seek urgent care if severe.",
-        "Pneumonia": "See a doctor — antibiotics may be required; rest and fluids.",
+        "Asthma": "Use inhaler as prescribed, avoid triggers."
     }
     remedy_text = local_remedy_db.get(disease)
     source = "local"
     if not remedy_text:
-        # attempt cached
+        # check cache
         cache_key = f"remedy:{disease}"
         if redis_client:
-            cached = redis_client.get(cache_key)
-            if cached:
-                try:
+            try:
+                cached = redis_client.get(cache_key)
+                if cached:
                     remedy_text = cached.decode("utf-8")
                     source = "cache"
-                except Exception:
-                    remedy_text = None
-        if not remedy_text:
-            # use Gemini
-            gem_rem = gemini_query_for_remedies(disease)
-            remedy_text = gem_rem
-            source = "gemini" if gem_rem else "none"
-            if redis_client and gem_rem:
+            except Exception:
+                pass
+
+    if not remedy_text:
+        # try Gemini
+        gem = gemini_query_for_remedies(disease)
+        if gem:
+            remedy_text = gem
+            source = "gemini"
+            if redis_client:
                 try:
-                    redis_client.setex(cache_key, 86400, gem_rem)
+                    redis_client.setex(cache_key, 86400, gem)
                 except Exception:
                     pass
+        else:
+            remedy_text = "No remedies available."
 
     return render_template("remedies.html", disease=disease, remedies=remedy_text, source=source)
 
 
-# simple health check
+# health check
 @app.route("/health")
 def health():
     return jsonify({"status": "ok"}), 200
@@ -293,5 +327,5 @@ def health():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    # disable reloader in production environment
+    # Do not enable debug in production
     app.run(host="0.0.0.0", port=port)
