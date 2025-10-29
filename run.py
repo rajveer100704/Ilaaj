@@ -1,216 +1,278 @@
 # run.py
 import os
 import json
+import traceback
+from typing import List, Dict, Any
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from difflib import SequenceMatcher
-from typing import List
+from rapidfuzz import fuzz
+import redis.asyncio as aioredis
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI(title="Ilaaj — AI Health Companion")
 
-# static & templates (keep paths exactly as your structure)
+# mount static and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# dataset paths
-DATASET_PATH = os.path.join("database", "disease_dataset.json")
+# config
+DATA_PATH = os.path.join("database", "disease_dataset.json")
 REMEDIES_PATH = os.path.join("database", "remedies.json")  # optional
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+GEMINI_KEY = os.getenv("GEMINI_API_KEY", "") or None
+PORT = int(os.getenv("PORT", "8000"))
 
-# load dataset once
-if not os.path.exists(DATASET_PATH):
-    raise FileNotFoundError(f"Dataset missing at {DATASET_PATH}")
-with open(DATASET_PATH, "r", encoding="utf-8") as f:
+# load dataset
+if not os.path.exists(DATA_PATH):
+    raise FileNotFoundError(f"Dataset not found: {DATA_PATH}")
+with open(DATA_PATH, "r", encoding="utf-8") as f:
     DISEASE_DB = json.load(f)
 
-# optional remedies DB (list of {"Disease":.., "Remedies":[..]})
+# optional remedies DB
 REMEDIES_DB = {}
 if os.path.exists(REMEDIES_PATH):
     try:
         with open(REMEDIES_PATH, "r", encoding="utf-8") as f:
-            rr = json.load(f)
-            for e in rr:
-                name = e.get("Disease", "").strip().lower()
-                if name:
-                    REMEDIES_DB[name] = e.get("Remedies", [])
+            arr = json.load(f)
+            for e in arr:
+                key = e.get("Disease", "").strip().lower()
+                if key:
+                    REMEDIES_DB[key] = e.get("Remedies") or []
     except Exception:
         REMEDIES_DB = {}
 
-def seq_ratio(a: str, b: str) -> float:
-    return SequenceMatcher(None, a.lower(), b.lower()).ratio()
+# async redis client
+try:
+    redis_client = aioredis.from_url(REDIS_URL, decode_responses=True)
+except Exception:
+    redis_client = None
 
-def top_matches_from_db(user_symptoms_text: str, top_n: int = 10):
-    # user_symptoms_text: comma separated
-    parts = [p.strip().lower() for p in user_symptoms_text.split(",") if p.strip()]
+
+def normalize_text(s: str) -> str:
+    return s.strip().lower()
+
+
+def score_match(user_symptoms: List[str], known_symptoms: List[str]) -> float:
+    # For each user symptom, find best fuzzy ratio among known_symptoms; average them.
+    if not user_symptoms or not known_symptoms:
+        return 0.0
+    total = 0.0
+    for us in user_symptoms:
+        best = 0.0
+        for ks in known_symptoms:
+            # token_set_ratio deals well with order/extra words
+            r = fuzz.token_set_ratio(us, ks)  # 0..100
+            if r > best:
+                best = r
+        total += best
+    avg = total / len(user_symptoms)
+    # normalize to 0..1
+    return avg / 100.0
+
+
+async def top_matches_from_db(symptoms_text: str, top_n: int = 10):
+    parts = [normalize_text(p) for p in symptoms_text.split(",") if p.strip()]
     if not parts:
         return []
-
     results = []
     for entry in DISEASE_DB:
-        disease = entry.get("Disease") or entry.get("disease") or ""
-        known_symptoms = entry.get("Symptom") or entry.get("symptom") or entry.get("Symptoms") or entry.get("symptoms") or []
-        known_symptoms = [str(s).strip().lower() for s in known_symptoms if str(s).strip()]
-        if not known_symptoms:
+        disease_name = entry.get("Disease") or entry.get("disease") or ""
+        known = entry.get("Symptom") or entry.get("symptom") or entry.get("Symptoms") or entry.get("symptoms") or []
+        known = [normalize_text(str(s)) for s in known if str(s).strip()]
+        if not known:
             continue
-
-        # score: average of best similarity for each user symptom against the disease's symptoms
-        per_user_scores = []
-        for us in parts:
-            best = 0.0
-            for ks in known_symptoms:
-                r = seq_ratio(us, ks)
-                if r > best:
-                    best = r
-            per_user_scores.append(best)
-        # average similarity (0..1)
-        avg_similarity = sum(per_user_scores) / len(per_user_scores) if per_user_scores else 0.0
-        score_pct = round(avg_similarity * 100, 2)
-        # only include if at least some overlap
-        if score_pct > 0:
-            results.append({"disease": disease, "score": score_pct})
-
-    # sort by score desc
+        score = score_match(parts, known)  # 0..1
+        pct = round(score * 100, 2)
+        if pct > 0:
+            results.append({"disease": disease_name, "score": pct})
     results.sort(key=lambda x: x["score"], reverse=True)
     return results[:top_n]
 
-# server pages
+
+# pages
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
 
 @app.get("/diagnose", response_class=HTMLResponse)
 async def diagnose_page(request: Request):
     return templates.TemplateResponse("diagnose.html", {"request": request})
 
+
 @app.get("/remedies", response_class=HTMLResponse)
 async def remedies_page(request: Request):
     return templates.TemplateResponse("remedies.html", {"request": request})
+
 
 @app.get("/result", response_class=HTMLResponse)
 async def result_page(request: Request):
     return templates.TemplateResponse("result.html", {"request": request})
 
+
 # API endpoints
 @app.post("/api/diagnose")
 async def api_diagnose(request: Request):
     """
-    Expects JSON: { "symptoms": "fever, cough" }
-    Returns: { "results": [ {"disease":"X","score":85.0}, ... ] , "source": "db"|"gemini" }
+    Input: {"symptoms": "fever, cough"}
+    Returns: {"results":[{"disease":"X","score":87.5},...], "source":"db"|"gemini"}
     """
     try:
-        payload = await request.json()
+        data = await request.json()
     except Exception:
         return JSONResponse({"error": "Invalid JSON"}, status_code=400)
-
-    symptoms = payload.get("symptoms", "")
+    symptoms = data.get("symptoms", "")
     if not isinstance(symptoms, str) or not symptoms.strip():
-        return JSONResponse({"results": []})
+        return JSONResponse({"results": [], "source": "db"})
 
-    # try DB first
-    results = top_matches_from_db(symptoms, top_n=10)
+    cache_key = f"diagnose:{symptoms.strip().lower()}"
+    # try redis
+    if redis_client:
+        try:
+            cached = await redis_client.get(cache_key)
+            if cached:
+                return JSONResponse({"results": json.loads(cached), "source": "cache"})
+        except Exception:
+            pass
+
+    results = await top_matches_from_db(symptoms, top_n=20)
     source = "db"
-    # fallback to Gemini if no good results
-    if not results or (len(results) == 1 and results[0]["score"] < 30):
-        GEMINI_KEY = os.environ.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY")
-        if GEMINI_KEY:
-            # use google generative AI client if available
+    top_score = results[0]["score"] if results else 0.0
+
+    # fallback to Gemini if no decent DB results
+    if (not results) or (top_score < 40.0 and GEMINI_KEY):
+        try:
+            import google.generativeai as genai
+
+            genai.configure(api_key=GEMINI_KEY)
+            model = genai.GenerativeModel("gemini-1.5-pro-latest")
+            prompt = (
+                f"User symptoms: '{symptoms}'. Provide a JSON array of up to 10 likely diseases "
+                "with keys 'disease' and 'score' (percentage). Example: [{\"disease\":\"Flu\",\"score\":75.3}, ...]"
+            )
+            resp = model.generate_content(prompt)
+            text = getattr(resp, "text", None) or str(resp)
+            parsed = None
             try:
-                import google.generativeai as genai
-                genai.configure(api_key=GEMINI_KEY)
-                model = genai.GenerativeModel("gemini-1.5-pro-latest")
-                prompt = (
-                    f"Given the user's symptoms: '{symptoms}', "
-                    "return a JSON array of the top 10 likely diseases with 'disease' and 'score' (percentage) fields. "
-                    "Example: [{\"disease\":\"Influenza\",\"score\":78.5}, ...]"
-                )
-                resp = model.generate_content(prompt)
-                # resp may contain text; try to parse JSON from it
-                text = getattr(resp, "text", None) or str(resp)
-                parsed = None
-                try:
-                    parsed = json.loads(text)
-                except Exception:
-                    # try to extract JSON substring
-                    start = text.find("[")
-                    end = text.rfind("]") + 1
-                    if start != -1 and end != -1:
-                        parsed = json.loads(text[start:end])
-                if isinstance(parsed, list):
-                    # normalize
-                    parsed2 = []
-                    for p in parsed[:10]:
-                        if isinstance(p, dict) and "disease" in p:
-                            score = float(p.get("score", 0) or 0)
-                            parsed2.append({"disease": p.get("disease"), "score": round(score, 2)})
-                    if parsed2:
-                        results = parsed2
-                        source = "gemini"
+                parsed = json.loads(text)
             except Exception:
-                # ignore and keep db results
-                pass
+                # try to extract JSON array substring
+                start = text.find("[")
+                end = text.rfind("]") + 1
+                if start != -1 and end != -1:
+                    parsed = json.loads(text[start:end])
+            if isinstance(parsed, list) and parsed:
+                # normalize to expected format
+                parsed2 = []
+                for p in parsed[:10]:
+                    if isinstance(p, dict) and "disease" in p:
+                        try:
+                            sc = float(p.get("score", 0) or 0)
+                        except Exception:
+                            sc = 0.0
+                        parsed2.append({"disease": p.get("disease"), "score": round(sc, 2)})
+                if parsed2:
+                    results = parsed2
+                    source = "gemini"
+        except Exception:
+            # if anything fails, keep DB results
+            traceback.print_exc()
+
+    # trim top 10
+    results = results[:10]
+
+    # cache
+    if redis_client:
+        try:
+            await redis_client.set(cache_key, json.dumps(results), ex=60 * 60)  # 1 hour
+        except Exception:
+            pass
 
     return JSONResponse({"results": results, "source": source})
+
 
 @app.post("/api/remedies")
 async def api_remedies(request: Request):
     """
     Accepts:
-      { "disease": "Name" }  OR
-      { "diseases": ["Name1","Name2"] }
+      {"disease":"Name"} or {"diseases":["A","B"]}
     Returns:
-      {"remedies":[{"disease":..,"remedies":[...],"source":"dataset"|"gemini"|"none"}]}
+      {"remedies":[{"disease":..,"remedies":[..],"source":"dataset"|"heuristic"|"gemini"|"none"}]}
     """
     try:
-        payload = await request.json()
+        data = await request.json()
     except Exception:
         return JSONResponse({"error": "Invalid JSON"}, status_code=400)
 
     diseases = []
-    if "diseases" in payload and isinstance(payload["diseases"], list):
-        diseases = payload["diseases"]
-    elif "disease" in payload and isinstance(payload["disease"], str):
-        diseases = [payload["disease"]]
+    if "diseases" in data and isinstance(data["diseases"], list):
+        diseases = data["diseases"]
+    elif "disease" in data and isinstance(data["disease"], str):
+        diseases = [data["disease"]]
     else:
         return JSONResponse({"remedies": []})
 
     out = []
-    GEMINI_KEY = os.environ.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY")
     for d in diseases:
-        dn = d.strip()
+        dn = str(d).strip()
         dn_norm = dn.lower()
-        # check local remedies db first
+        cache_key = f"remedy:{dn_norm}"
+        # check cache
+        if redis_client:
+            try:
+                c = await redis_client.get(cache_key)
+                if c:
+                    out.append(json.loads(c))
+                    continue
+            except Exception:
+                pass
+
+        # dataset remedies
         if dn_norm in REMEDIES_DB:
-            out.append({"disease": dn, "remedies": REMEDIES_DB[dn_norm], "source": "dataset"})
+            res_obj = {"disease": dn, "remedies": REMEDIES_DB[dn_norm], "source": "dataset"}
+            out.append(res_obj)
+            if redis_client:
+                try:
+                    await redis_client.set(cache_key, json.dumps(res_obj), ex=60 * 60)
+                except Exception:
+                    pass
             continue
 
-        # else attempt to find any dataset description and produce a simple suggestion
-        # to avoid always calling Gemini, create a basic fallback from dataset symptoms
-        # create a simple heuristic "suggested remedies" from symptoms in dataset (informational only)
-        suggested = []
+        # heuristic fallback: check DISEASE_DB symptoms and produce generic suggestions
+        heur = []
         for entry in DISEASE_DB:
             if entry.get("Disease", "").strip().lower() == dn_norm:
-                # suggest basic lines using symptoms
-                syms = entry.get("Symptom", [])
-                if isinstance(syms, list) and syms:
-                    suggested.append("Rest and monitor symptoms.")
-                    suggested.append("Stay hydrated and maintain comfort.")
-                    suggested.append("If symptoms worsen, seek medical attention.")
+                heur = [
+                    "Rest and monitor your symptoms.",
+                    "Stay hydrated and maintain comfort.",
+                    "Use over-the-counter pain relievers if appropriate (follow instructions).",
+                    "If symptoms worsen or persist, seek medical care."
+                ]
                 break
-
-        if suggested:
-            out.append({"disease": dn, "remedies": suggested, "source": "heuristic"})
+        if heur:
+            res_obj = {"disease": dn, "remedies": heur, "source": "heuristic"}
+            out.append(res_obj)
+            if redis_client:
+                try:
+                    await redis_client.set(cache_key, json.dumps(res_obj), ex=60 * 60)
+                except Exception:
+                    pass
             continue
 
-        # finally fallback to Gemini if key available
+        # gemini fallback
         if GEMINI_KEY:
             try:
                 import google.generativeai as genai
+
                 genai.configure(api_key=GEMINI_KEY)
                 model = genai.GenerativeModel("gemini-1.5-pro-latest")
                 prompt = (
-                    f"Provide 5 safe, non-prescriptive home remedies or self-care suggestions "
-                    f"for a patient who may have '{dn}'. Return a JSON array of strings."
+                    f"Provide up to 6 safe, non-prescriptive home remedies or self-care suggestions for '{dn}'. "
+                    "Return a JSON array of strings only."
                 )
                 resp = model.generate_content(prompt)
                 text = getattr(resp, "text", None) or str(resp)
@@ -223,17 +285,29 @@ async def api_remedies(request: Request):
                     if start != -1 and end != -1:
                         parsed = json.loads(text[start:end])
                 if isinstance(parsed, list) and parsed:
-                    out.append({"disease": dn, "remedies": parsed, "source": "gemini"})
+                    res_obj = {"disease": dn, "remedies": parsed, "source": "gemini"}
+                    out.append(res_obj)
+                    if redis_client:
+                        try:
+                            await redis_client.set(cache_key, json.dumps(res_obj), ex=60 * 60)
+                        except Exception:
+                            pass
                     continue
             except Exception:
-                pass
+                traceback.print_exc()
 
         out.append({"disease": dn, "remedies": [], "source": "none"})
 
     return JSONResponse({"remedies": out})
 
 
-# simple health check
 @app.get("/health")
 async def health():
     return JSONResponse({"status": "ok"})
+
+
+# run with uvicorn run:app --reload
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("run:app", host="0.0.0.0", port=PORT, reload=True)
