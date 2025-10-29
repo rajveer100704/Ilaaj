@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="remedies-page">
-    <h2>Natural Remedies</h2>
-    <p>Here are some common home remedies for basic health issues:</p>
-
-    <ul>
-        <li><b>Cold & Cough:</b> Drink warm ginger tea with honey.</li>
-        <li><b>Headache:</b> Apply peppermint oil on your temples.</li>
-        <li><b>Indigestion:</b> Mix lemon juice and warm water with a pinch of salt.</li>
-        <li><b>Fatigue:</b> Stay hydrated and eat magnesium-rich foods.</li>
-    </ul>
-</div>
+<section class="card">
+  <h2>Remedies for: {{ disease }}</h2>
+  <div class="muted small">Source: {{ source }}</div>
+  <div class="remedy-area">
+    {% if remedies %}
+      <pre class="remedy-text">{{ remedies }}</pre>
+    {% else %}
+      <p>No remedies available.</p>
+    {% endif %}
+  </div>
+  <a class="btn" href="{{ url_for('diagnose') }}">← Back to diagnose</a>
+</section>
 {% endblock %}
