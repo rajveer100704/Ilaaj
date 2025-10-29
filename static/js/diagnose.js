@@ -1,118 +1,85 @@
 // static/js/diagnose.js
-const diagnoseBtn = document.getElementById("diagnoseBtn");
-const symptomsInput = document.getElementById("symptoms");
-const chatArea = document.getElementById("chatArea");
+document.addEventListener("DOMContentLoaded", function () {
+  const btn = document.getElementById("diagnose-btn");
+  const textarea = document.getElementById("symptoms");
+  const status = document.getElementById("diagnose-status");
+  const resultsSection = document.getElementById("results");
+  const matchesList = document.getElementById("matches");
+  const detailed = document.getElementById("detailed");
 
-// helper to append chat message
-function appendMsg(text, who="ai"){
-  const div = document.createElement("div");
-  div.classList.add("msg", who === "user" ? "user" : "ai");
-  div.innerHTML = text;
-  chatArea.appendChild(div);
-  div.scrollIntoView({behavior:"smooth", block:"end"});
-}
-
-function appendSpinner(){
-  const s = document.createElement("div");
-  s.className = "spinner";
-  s.id = "diag-spinner";
-  chatArea.appendChild(s);
-  s.scrollIntoView({behavior:"smooth"});
-}
-
-function removeSpinner(){
-  const s = document.getElementById("diag-spinner");
-  if(s) s.remove();
-}
-
-diagnoseBtn && diagnoseBtn.addEventListener("click", async () => {
-  const raw = symptomsInput.value.trim();
-  if(!raw) { alert("Please enter symptoms (comma separated)."); return; }
-
-  // show user bubble
-  appendMsg(`<strong>You:</strong> ${raw}`, "user");
-
-  // show spinner
-  appendSpinner();
-
-  try {
-    const resp = await fetch("/api/diagnose", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({symptoms: raw})
-    });
-    const data = await resp.json();
-    removeSpinner();
-    if(data.error){
-      appendMsg(`<strong>Error:</strong> ${data.error}`);
+  async function doDiagnose() {
+    const text = textarea.value.trim();
+    if (!text) {
+      status.textContent = "Please enter symptoms.";
       return;
     }
-    const results = data.results || [];
-    if(results.length === 0){
-      appendMsg("No matches found.");
-      return;
-    }
-    // show chat-style AI message with top 3 summary + cards for top 10
-    let summary = `<strong>Top matches (showing top ${Math.min(results.length,10)}):</strong><br/>`;
-    summary += "<ol>";
-    for(let i=0;i<Math.min(3,results.length);i++){
-      summary += `<li>${results[i].disease} — ${results[i].score}%</li>`;
-    }
-    summary += "</ol>";
-    appendMsg(summary);
+    status.textContent = "Analyzing…";
+    matchesList.innerHTML = "";
+    detailed.innerHTML = "";
+    resultsSection.classList.add("hidden");
 
-    // Add result cards
-    const container = document.createElement("div");
-    container.className = "results-grid";
-    for(let i=0;i<Math.min(10, results.length); i++){
-      const r = results[i];
-      const card = document.createElement("div");
-      card.className = "result-card";
-      let remediesText = r.remedies && r.remedies.length ? (Array.isArray(r.remedies)? r.remedies.join(", ") : r.remedies) : "No dataset remedies (click to fetch).";
-      card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;">
-                          <div><strong>${i+1}. ${r.disease}</strong><div style="color:#556">${r.score}%</div></div>
-                          <div><button class="btn primary small" data-disease="${encodeURIComponent(r.disease)}">Remedies</button></div>
-                        </div>
-                        <div style="margin-top:8px;color:#3b556b">${remediesText}</div>`;
-      container.appendChild(card);
-    }
-    chatArea.appendChild(container);
-    container.scrollIntoView({behavior:"smooth"});
-
-    // attach click listeners for remedies buttons
-    container.querySelectorAll("button[data-disease]").forEach(btn=>{
-      btn.addEventListener("click", async (e)=>{
-        const disease = decodeURIComponent(btn.getAttribute("data-disease"));
-        btn.disabled = true;
-        const placeholder = document.createElement("div");
-        placeholder.innerHTML = `<div class="spinner" style="width:30px;height:30px;border-width:4px"></div>`;
-        btn.parentElement.appendChild(placeholder);
-        try {
-          const rres = await fetch("/api/remedies", {
-            method: "POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify({ diseases: [disease] })
-          });
-          const json = await rres.json();
-          if(json.remedies && json.remedies.length){
-            const rem = json.remedies[0];
-            alert(`${rem.disease} — Remedies:\n\n${(Array.isArray(rem.remedies)? rem.remedies.join("\n- ") : rem.remedies)}`);
-          } else {
-            alert("No remedies returned.");
-          }
-        } catch(err){
-          console.error(err);
-          alert("Failed to fetch remedies.");
-        } finally {
-          placeholder.remove();
-          btn.disabled = false;
-        }
+    try {
+      const res = await fetch("/api/diagnose", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ symptoms: text }),
       });
-    });
+      const data = await res.json();
+      status.textContent = "";
+      const results = data.results || [];
+      if (!results || results.length === 0) {
+        resultsSection.classList.remove("hidden");
+        matchesList.innerHTML = "<li>No confident matches found.</li>";
+        return;
+      }
 
-  } catch(err){
-    removeSpinner();
-    console.error(err);
-    appendMsg("Server error. Try again later.");
+      resultsSection.classList.remove("hidden");
+      // list top 10
+      results.slice(0, 10).forEach(function (r, idx) {
+        const li = document.createElement("li");
+        li.className = "mb-2";
+        li.innerHTML = `<div class="p-3 border rounded bg-slate-50">
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="font-semibold text-indigo-700">${r.disease}</div>
+              <div class="text-sm text-gray-600 mt-1">Confidence: ${r.score}%</div>
+            </div>
+            <div class="ml-4">
+              <button data-disease="${encodeURIComponent(r.disease)}" class="remedies-btn px-3 py-1 text-sm border rounded text-indigo-600">View Remedies</button>
+            </div>
+          </div>
+        </div>`;
+        matchesList.appendChild(li);
+
+        // Detailed shorter card
+        const card = document.createElement("div");
+        card.className = "border rounded p-4 bg-slate-50";
+        card.innerHTML = `<h4 class="font-semibold">${idx + 1}. ${r.disease}</h4>
+                          <div class="text-sm text-gray-600">${r.score}%</div>`;
+        detailed.appendChild(card);
+      });
+
+      // attach remedies buttons
+      document.querySelectorAll(".remedies-btn").forEach(function (b) {
+        b.addEventListener("click", function () {
+          const disease = decodeURIComponent(this.getAttribute("data-disease"));
+          // navigate to remedies page with query param (no popup)
+          const q = encodeURIComponent(disease);
+          window.location.href = "/remedies?disease=" + q;
+        });
+      });
+    } catch (e) {
+      status.textContent = "Failed to diagnose.";
+    }
   }
+
+  btn.addEventListener("click", doDiagnose);
+
+  // support pressing Enter inside textarea for quick submit (Shift+Enter for newline)
+  textarea.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      doDiagnose();
+    }
+  });
 });
