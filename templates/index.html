@@ -1,38 +1,22 @@
 <!-- templates/index.html -->
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ilaaj — AI Health Assistant</title>
-  <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-  <header class="nav">
-    <div class="brand">Ilaaj <span class="brand-emoji">🩺</span></div>
-    <nav>
-      <a href="/" class="nav-link">Home</a>
-      <a href="/diagnose" class="nav-link">Diagnose</a>
-      <a href="/remedies" class="nav-link">Remedies</a>
-    </nav>
-  </header>
-
-  <main class="hero center">
-    <div class="hero-card">
-      <h1>Ilaaj — Your AI Health Companion</h1>
-      <p class="lead">Enter symptoms and get intelligent, dataset-backed diagnosis suggestions. If the dataset doesn't match, our AI will provide expert fallback suggestions.</p>
-
-      <div class="cta-row">
-        <a class="btn primary pulse" href="/diagnose">Start Diagnosis</a>
-        <a class="btn secondary" href="/remedies">Explore Remedies</a>
+{% extends "base.html" %}
+{% block content %}
+<div class="rounded-lg p-8 bg-white shadow">
+  <div class="grid md:grid-cols-2 gap-6 items-center">
+    <div>
+      <h1 class="text-4xl font-bold text-indigo-700 mb-3">Ilaaj — Your AI Health Companion</h1>
+      <p class="text-gray-600 mb-6">Enter symptoms and get intelligent, dataset-backed diagnosis suggestions. If the dataset doesn't match, our AI fallback will provide guidance.</p>
+      <div class="flex gap-4">
+        <a href="/diagnose" class="px-5 py-3 bg-indigo-600 text-white rounded-lg">Start Diagnosis</a>
+        <a href="/remedies" class="px-5 py-3 border rounded-lg">Explore Remedies</a>
       </div>
-
-      <p class="disclaimer">⚠️ Disclaimer: Ilaaj is an informational assistant — not a replacement for professional medical advice.</p>
+      <div class="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-300 rounded">
+        <strong>⚠️ Disclaimer:</strong> Ilaaj is informational and not a replacement for professional medical advice.
+      </div>
     </div>
-  </main>
-
-  <footer class="footer">
-    <small>© 2025 Ilaaj — Built responsibly for learning & prototyping</small>
-  </footer>
-</body>
-</html>
+    <div class="flex justify-center">
+      <img src="/static/images/doctoricon.png" alt="doctor" class="w-48 h-48"/>
+    </div>
+  </div>
+</div>
+{% endblock %}
