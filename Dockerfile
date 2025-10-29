@@ -20,4 +20,4 @@ COPY . /app
 EXPOSE 5000
 
 # Use shell form so Render expands $PORT at runtime
-CMD uvicorn main:app --host 0.0.0.0 --port $PORT
+CMD uvicorn run:app --host 0.0.0.0 --port $PORT
