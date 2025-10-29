@@ -1,17 +1,16 @@
-<!-- templates/remedies.html -->
 {% extends "base.html" %}
 {% block content %}
-<div class="bg-white rounded-lg p-6 shadow">
-  <h2 class="text-2xl font-semibold mb-2">Remedies</h2>
-  <p class="text-sm text-gray-600 mb-4">View remedies for a disease (or open this page from Diagnose by clicking "View Remedies").</p>
+<div class="glass-card p-6 max-w-3xl mx-auto">
+  <h2 class="text-2xl font-semibold mb-3">Remedies</h2>
+  <p class="text-slate-600 mb-4">View remedies returned from dataset or AI fallback. You can open this page from Diagnose.</p>
 
   <div class="flex gap-3 mb-4">
-    <input id="disease" placeholder="Type disease name (or leave blank if coming from Diagnose)" class="flex-1 p-3 border rounded" />
-    <button id="fetch-remedies" class="px-4 py-2 bg-indigo-600 text-white rounded">Get Remedies</button>
+    <input id="disease" placeholder="Type disease name (or open via Diagnose)" class="flex-1 p-3 border rounded" />
+    <button id="fetch-remedies" class="px-4 py-2 bg-sky-600 text-white rounded">Get Remedies</button>
   </div>
 
   <div id="remedies-area" class="space-y-4">
-    <div class="text-gray-500">Enter a disease name and click Get Remedies, or click a disease's 'View Remedies' from Diagnose page.</div>
+    <div class="text-slate-500">Enter a disease or click "View Remedies" from Diagnose.</div>
   </div>
 </div>
 
