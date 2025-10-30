@@ -1,8 +1,6 @@
 {% extends "base.html" %}
-
 {% block content %}
 <section class="cards-row">
-  <!-- LEFT: Welcome card -->
   <article class="card welcome-card">
     <h1>Welcome to Ilaaj</h1>
     <div class="hero-icon">
@@ -15,7 +13,6 @@
     <p class="disclaimer">Disclaimer: Ilaaj is informational only — not a replacement for professional medical advice.</p>
   </article>
 
-  <!-- CENTER: Diagnose card -->
   <article class="card diagnose-card" id="diagnose">
     <h2>Diagnose</h2>
     <p class="muted">Enter symptoms (comma separated) and click <strong>Diagnose</strong> (top 3) or <strong>Open Full</strong> (top 10).</p>
@@ -47,14 +44,13 @@
     </div>
   </article>
 
-  <!-- RIGHT: Optional info card (kept minimal) -->
   <article class="card info-card">
     <h2>How it works</h2>
-    <p class="muted">We send the symptoms to the AI backend (Gemini) and return likely conditions and safe, non-prescriptive remedies. Always consult a professional for medical care.</p>
+    <p class="muted">We use the Gemini model to estimate likely conditions from your symptoms and provide safe, general remedies. Always confirm with a healthcare professional.</p>
     <ul class="bullets">
-      <li>Diagnose - top 3 quick results</li>
-      <li>Open Full - top 10 detailed results</li>
-      <li>View Remedies - per-condition suggestions</li>
+      <li>Diagnose — quick top 3 suggestions</li>
+      <li>Open Full — more detailed top 10</li>
+      <li>View remedies per condition (safe, non-prescriptive)</li>
     </ul>
   </article>
 </section>
