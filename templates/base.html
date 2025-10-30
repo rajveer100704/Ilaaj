@@ -4,18 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Ilaaj — Smart AI Health Assistant</title>
-
-  <!-- Your project CSS -->
   <link rel="stylesheet" href="/static/css/styles.css" />
-
-  <!-- favicon (optional) -->
-  <link rel="icon" href="/static/images/doctoricon.png" type="image/png" />
+  <link rel="icon" href="/static/images/doctoricon.png" />
 </head>
 <body>
   <header class="site-header">
     <div class="container header-inner">
       <div class="logo">
-        <img src="/static/images/doctoricon.png" alt="Ilaaj" />
+        <img src="/static/images/doctoricon.png" alt="Ilaaj logo" />
         <div class="brand">
           <div class="brand-title">Ilaaj</div>
           <div class="brand-sub">Smart AI Health Assistant</div>
@@ -30,8 +26,7 @@
     </div>
   </header>
 
-  <main id="home" class="container main-grid">
-    <!-- page content will be injected -->
+  <main class="container main-grid">
     {% block content %}{% endblock %}
   </main>
 
@@ -39,7 +34,6 @@
     <div class="container">© 2025 Ilaaj — For learning & prototyping only</div>
   </footer>
 
-  <!-- scripts loaded at bottom -->
   <script src="/static/js/diagnose.js" defer></script>
 </body>
 </html>
