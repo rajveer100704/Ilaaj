@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
         detailed.appendChild(card);
       });
 
+      // attach handlers
       document.querySelectorAll(".rem-btn").forEach((b) => {
         b.addEventListener("click", function () {
           const disease = decodeURIComponent(this.getAttribute("data-disease"));
