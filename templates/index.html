@@ -47,23 +47,48 @@
 document.getElementById('idx-diagnose').addEventListener('click', async () => {
   const s = document.getElementById('idx-symptoms').value.trim();
   if(!s) return;
-  const res = await fetch('/api/diagnose', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({symptoms:s})});
-  const j = await res.json();
-  if(j.results && j.results.length) {
-    document.getElementById('idx-preview').innerText = j.results.slice(0,3).map(r=>r.disease+' — '+r.score+'%').join('\\n');
-  } else {
-    document.getElementById('idx-preview').innerText = 'No matches found.';
+  try {
+    const res = await fetch('/api/diagnose', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({symptoms:s})});
+    const j = await res.json();
+    const preview = document.getElementById('idx-preview');
+    if(j.results && j.results.length) {
+      // build clean lines and ensure any literal backslash-n sequences are converted to real newlines
+      const lines = j.results.slice(0,3).map(r => {
+        // ensure r.disease is a string and r.score a number
+        const name = String(r.disease || 'Unknown');
+        const score = (typeof r.score === 'number') ? r.score : parseFloat(r.score || 0);
+        return `${name} — ${score}%`;
+      });
+      preview.innerText = lines.join('\n');
+    } else {
+      preview.innerText = 'No matches found.';
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById('idx-preview').innerText = 'Diagnosis failed. See console.';
   }
 });
+
 document.getElementById('idx-remedies').addEventListener('click', async () => {
   const d = document.getElementById('idx-disease').value.trim();
   if(!d) return;
-  const res = await fetch('/api/remedies', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({disease:d})});
-  const j = await res.json();
-  if(j.remedies && j.remedies.length) {
-    document.getElementById('idx-rem-res').innerText = j.remedies.map(x=>x.disease+': '+(Array.isArray(x.remedies)? x.remedies.join('; ') : String(x.remedies))).join('\\n\\n');
-  } else {
-    document.getElementById('idx-rem-res').innerText = 'No remedies found.';
+  try {
+    const res = await fetch('/api/remedies', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({disease:d})});
+    const j = await res.json();
+    const out = document.getElementById('idx-rem-res');
+    if(j.remedies && j.remedies.length) {
+      out.innerText = j.remedies.map(x => {
+        const rems = Array.isArray(x.remedies) ? x.remedies.join('; ') : String(x.remedies || '');
+        return `${x.disease}: ${rems}`;
+      }).join('\n\n');
+    } else if (j.error) {
+      out.innerText = 'Error fetching remedies: ' + j.error;
+    } else {
+      out.innerText = 'No remedies found.';
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById('idx-rem-res').innerText = 'Failed to fetch remedies.';
   }
 });
 </script>
