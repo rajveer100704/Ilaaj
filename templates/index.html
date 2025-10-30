@@ -1,46 +1,41 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="grid md:grid-cols-3 gap-6">
-  <!-- Card 1: Welcome -->
   <div class="glass-card p-6">
-    <div class="flex flex-col items-start gap-4">
-      <h1 class="text-2xl font-semibold">Welcome to Ilaaj</h1>
-      <div class="w-full rounded-lg bg-white p-6 flex items-center justify-center">
-        <img src="/static/images/doctoricon.png" alt="doctor" class="w-28 h-28"/>
-      </div>
-      <p class="text-slate-600">Your AI-powered health diagnosis assistant</p>
-      <div class="w-full flex flex-col gap-3">
-        <a href="/diagnose" class="block text-center px-4 py-2 bg-sky-600 text-white rounded-lg shadow">Start Diagnosis</a>
-        <a href="/remedies" class="block text-center px-4 py-2 border rounded-lg">View Remedies</a>
-      </div>
-      <p class="text-xs text-slate-500 mt-2">
-        Disclaimer: Ilaaj is informational only — not a replacement for professional medical advice.
-      </p>
+    <h1 class="text-2xl font-semibold mb-4">Welcome to Ilaaj</h1>
+    <div class="w-full rounded-lg bg-white p-6 flex items-center justify-center">
+      <img src="/static/images/doctoricon.png" alt="doctor" class="w-28 h-28"/>
     </div>
+    <p class="text-slate-600 mt-4">Your AI-powered health diagnosis assistant</p>
+    <div class="w-full flex flex-col gap-3 mt-4">
+      <a href="/diagnose" class="block text-center px-4 py-3 bg-sky-600 text-white rounded-lg shadow">Start Diagnosis</a>
+      <a href="/remedies" class="block text-center px-4 py-3 border rounded-lg mt-2">View Remedies</a>
+    </div>
+    <p class="text-xs muted mt-3">
+      Disclaimer: Ilaaj is informational only — not a replacement for professional medical advice.
+    </p>
   </div>
 
-  <!-- Card 2: Diagnose preview -->
   <div class="glass-card p-6">
     <h2 class="text-lg font-semibold mb-2">Diagnose</h2>
-    <p class="text-sm text-slate-600 mb-4">Enter symptoms (comma separated) and see the top matches.</p>
+    <p class="text-sm muted mb-4">Enter symptoms (comma separated) and see the top matches.</p>
     <div class="bg-white p-4 rounded-lg">
       <input id="idx-symptoms" class="w-full border p-2 rounded mb-3" placeholder="e.g., fever, cough" />
       <div class="flex gap-3">
         <button id="idx-diagnose" class="px-4 py-2 bg-sky-600 text-white rounded">Diagnose</button>
         <a href="/diagnose" class="px-4 py-2 border rounded">Open Full</a>
       </div>
-      <div id="idx-preview" class="mt-4 text-sm text-slate-600"></div>
+      <pre id="idx-preview" class="mt-4 text-sm text-slate-600 whitespace-pre-wrap"></pre>
     </div>
   </div>
 
-  <!-- Card 3: Remedies preview -->
   <div class="glass-card p-6">
     <h2 class="text-lg font-semibold mb-2">Remedies</h2>
-    <p class="text-sm text-slate-600 mb-4">Get remedies for the detected conditions.</p>
+    <p class="text-sm muted mb-4">Get remedies for the detected conditions.</p>
     <div class="bg-white p-4 rounded-lg">
       <input id="idx-disease" class="w-full border p-2 rounded mb-3" placeholder="Type disease (e.g., Influenza)" />
       <div class="flex gap-3">
-        <button id="idx-remedies" class="px-4 py-2 bg-white border rounded">Get Remedies</button>
+        <button id="idx-remedies" class="px-4 py-2 border rounded">Get Remedies</button>
         <a href="/remedies" class="px-4 py-2 border rounded">Open Full</a>
       </div>
       <div id="idx-rem-res" class="mt-4 text-sm text-slate-600"></div>
@@ -66,7 +61,7 @@ document.getElementById('idx-remedies').addEventListener('click', async () => {
   const res = await fetch('/api/remedies', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({disease:d})});
   const j = await res.json();
   if(j.remedies && j.remedies.length) {
-    document.getElementById('idx-rem-res').innerText = j.remedies.map(x=>x.disease+': '+(x.remedies.length>0? x.remedies.join('; '): 'No remedies')).join('\\n');
+    document.getElementById('idx-rem-res').innerText = j.remedies.map(x=>x.disease+': '+(Array.isArray(x.remedies)? x.remedies.join('; ') : String(x.remedies))).join('\\n\\n');
   } else {
     document.getElementById('idx-rem-res').innerText = 'No remedies found.';
   }
