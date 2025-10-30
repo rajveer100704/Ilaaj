@@ -1,1 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="diagnose-section">
+    <h2>AI Diagnosis Assistant</h2>
+    <textarea id="symptoms" placeholder="Enter your symptoms (e.g. fever, cough, fatigue)"></textarea>
+    <div class="btn-group">
+        <button id="diagnose-btn">Diagnose</button>
+        <button id="openfull-btn">Open Full</button>
+    </div>
+    <div id="results"></div>
+</div>
+
+<!-- Modal for Remedies -->
+<div id="remediesModal" class="modal">
+  <div class="modal-content">
+    <span id="closeModal">&times;</span>
+    <h3>Remedies</h3>
+    <div id="remediesContent"></div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', path='js/diagnose.js') }}"></script>
+{% endblock %}
 
