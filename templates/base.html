@@ -7,8 +7,9 @@
     <link rel="icon" href="/static/images/doctoricon.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      /* small overrides */
-      .glass-card { background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.85)); border-radius: 18px; box-shadow: 0 6px 30px rgba(14,30,37,0.08); }
+      body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+      .glass-card { background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.92)); border-radius: 16px; box-shadow: 0 8px 30px rgba(14,30,37,0.06); }
+      .muted { color: #6b7280; }
     </style>
   </head>
   <body class="bg-gradient-to-b from-sky-50 via-white to-sky-50 min-h-screen text-slate-800">
@@ -18,7 +19,7 @@
           <img src="/static/images/doctoricon.png" class="w-10 h-10" alt="logo" />
           <div>
             <div class="text-xl font-bold">Ilaaj</div>
-            <div class="text-xs text-slate-500">Smart AI Health Assistant</div>
+            <div class="text-xs muted">Smart AI Health Assistant</div>
           </div>
         </div>
         <nav class="space-x-6 text-sm">
@@ -33,7 +34,7 @@
       {% block content %}{% endblock %}
     </main>
 
-    <footer class="max-w-6xl mx-auto px-6 py-6 text-sm text-slate-500">
+    <footer class="max-w-6xl mx-auto px-6 py-6 text-sm muted">
       © 2025 Ilaaj — For learning & prototyping only
     </footer>
   </body>
