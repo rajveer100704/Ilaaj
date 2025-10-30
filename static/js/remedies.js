@@ -41,6 +41,12 @@ document.addEventListener("DOMContentLoaded", function () {
             ul.appendChild(li);
           });
           card.appendChild(ul);
+        } else if (typeof r.remedies === "string" && r.remedies.trim()) {
+          // sometimes Gemini returns string with bullets; convert to lines
+          const div = document.createElement("div");
+          div.className = "text-slate-600";
+          div.innerHTML = r.remedies.replace(/\n/g, "<br>");
+          card.appendChild(div);
         } else {
           const p = document.createElement("div");
           p.className = "text-slate-600";
