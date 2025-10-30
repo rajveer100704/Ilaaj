@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const remedyClose = document.getElementById("remedy-close");
   const startBtn = document.getElementById("start-diagnosis");
 
-  // Utility: show status message
   function setStatus(msg, isError = false) {
     status.textContent = msg;
     status.style.color = isError ? "crimson" : "";
@@ -23,7 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
     resultsSection.classList.add("hidden");
   }
 
-  // Render results array: [{disease, score}, ...]
   function renderResults(results) {
     resultsTableBody.innerHTML = "";
     if (!results || !results.length) {
@@ -33,13 +31,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     results.forEach((r, idx) => {
       const tr = document.createElement("tr");
-      // Disease cell
       const tdName = document.createElement("td");
-      tdName.innerHTML = `<div style="font-weight:600">${r.disease}</div><div class="muted" style="font-size:13px">${r.source ? r.source : ""}</div>`;
-      // Confidence cell
+      tdName.innerHTML = `<div style="font-weight:600">${r.disease}</div><div class="muted" style="font-size:13px">${r.explain || ""}</div>`;
       const tdScore = document.createElement("td");
       tdScore.innerHTML = `<div style="font-weight:600">${Number(r.score).toFixed(2)}%</div>`;
-      // Action cell
       const tdAction = document.createElement("td");
       const viewBtn = document.createElement("button");
       viewBtn.className = "small-btn";
@@ -56,15 +51,14 @@ document.addEventListener("DOMContentLoaded", function () {
     resultsSection.classList.remove("hidden");
   }
 
-  // Show a simple spinner while waiting
   function showSpinner(msg = "Loading…") {
     setStatus(msg);
   }
 
-  // call /api/diagnose with given symptoms and top_n
   async function callDiagnose(symptoms, topN = 3) {
     clearResults();
     remedyPanel.classList.add("hidden");
+    setStatus("");
     if (!symptoms || !symptoms.trim()) {
       setStatus("Please enter symptoms (comma separated).", true);
       return;
@@ -74,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const resp = await fetch("/api/diagnose", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ symptoms })
+        body: JSON.stringify({ symptoms, top_n: topN })
       });
       if (!resp.ok) {
         const txt = await resp.text();
@@ -83,20 +77,19 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
       const data = await resp.json();
-      const arr = (data.results || []).slice(0, topN).map(x => ({
+      const arr = (data.results || []).map(x => ({
         disease: x.disease || "Unknown Condition",
         score: Number(x.score || 0),
-        source: data.source || ""
+        explain: x.explain || ""
       }));
-      setStatus(""); // clear
-      renderResults(arr);
+      setStatus("");
+      renderResults(arr.slice(0, topN));
     } catch (e) {
       console.error(e);
       setStatus("Failed to diagnose — network error.", true);
     }
   }
 
-  // call /api/remedies for a single disease and show in remedy panel
   async function fetchRemediesFor(disease) {
     remedyPanel.classList.add("hidden");
     remedyTitle.textContent = "";
@@ -120,10 +113,8 @@ document.addEventListener("DOMContentLoaded", function () {
       setStatus("");
       remedyTitle.textContent = disease;
       if (!list || !Array.isArray(list.remedies) || !list.remedies.length) {
-        // show friendly message
-        remedyBody.innerHTML = `<p class='muted'>No remedies found for this disease (AI returned empty result). Always consult a healthcare provider.</p>`;
+        remedyBody.innerHTML = `<p class='muted'>No remedies found for this disease. Always consult a healthcare provider.</p>`;
       } else {
-        // nicely render list
         const ul = document.createElement("ul");
         ul.style.paddingLeft = "18px";
         ul.style.lineHeight = "1.6";
@@ -132,7 +123,6 @@ document.addEventListener("DOMContentLoaded", function () {
           li.textContent = it;
           ul.appendChild(li);
         });
-        // source
         const src = document.createElement("div");
         src.className = "muted";
         src.style.fontSize = "13px";
@@ -143,7 +133,6 @@ document.addEventListener("DOMContentLoaded", function () {
         remedyBody.appendChild(src);
       }
       remedyPanel.classList.remove("hidden");
-      // scroll to remedy panel if needed
       remedyPanel.scrollIntoView({ behavior: "smooth", block: "center" });
     } catch (e) {
       console.error(e);
@@ -151,7 +140,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Event listeners
   diagnoseBtn.addEventListener("click", function () {
     const sym = textarea.value.trim();
     callDiagnose(sym, 3);
@@ -166,7 +154,6 @@ document.addEventListener("DOMContentLoaded", function () {
     remedyPanel.classList.add("hidden");
   });
 
-  // quick Enter to submit
   textarea.addEventListener("keydown", function (e) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -174,19 +161,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Start button scrolls to diagnose
   startBtn.addEventListener("click", function () {
     document.getElementById("diagnose").scrollIntoView({ behavior: "smooth" });
     textarea.focus();
   });
 
-  // Auto-fill if query param ?symptoms=...
   (function () {
     const params = new URLSearchParams(window.location.search);
     if (params.has("symptoms")) {
       const s = params.get("symptoms");
       textarea.value = decodeURIComponent(s);
-      // auto-run quick diagnose (top3)
       callDiagnose(decodeURIComponent(s), 3);
     }
   })();
