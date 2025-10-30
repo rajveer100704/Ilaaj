@@ -1,4 +1,4 @@
-// static/js/remedies.js
+// static/js/remedies.js (updated error handling)
 document.addEventListener("DOMContentLoaded", function () {
   const fetchBtn = document.getElementById("fetch-remedies");
   const diseaseInput = document.getElementById("disease");
@@ -21,6 +21,13 @@ document.addEventListener("DOMContentLoaded", function () {
     src.textContent = obj.source ? `Source: ${obj.source}` : "";
     card.appendChild(src);
 
+    if (obj.error) {
+      const err = document.createElement("div");
+      err.className = "text-red-600 mb-2";
+      err.textContent = "Error: " + String(obj.error);
+      card.appendChild(err);
+    }
+
     if (Array.isArray(obj.remedies) && obj.remedies.length) {
       const ul = document.createElement("ul");
       ul.className = "list-disc pl-6 space-y-2 text-left text-slate-700";
@@ -30,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ul.appendChild(li);
       });
       card.appendChild(ul);
-    } else {
+    } else if (!obj.error) {
       const p = document.createElement("div");
       p.className = "text-slate-600";
       p.textContent = "No remedies found for this disease.";
@@ -50,7 +57,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = await res.json();
       const rems = data.remedies || [];
       if (!rems.length) {
-        area.innerHTML = "<div class='text-slate-500 p-4'>No remedies available.</div>";
+        if (data.error) {
+          area.innerHTML = `<div class='text-red-600 p-4'>${data.error}</div>`;
+        } else {
+          area.innerHTML = "<div class='text-slate-500 p-4'>No remedies available.</div>";
+        }
         return;
       }
       area.innerHTML = "";
