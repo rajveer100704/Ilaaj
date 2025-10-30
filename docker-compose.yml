@@ -5,13 +5,14 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
+
   web:
     build: .
-    restart: unless-stopped
     ports:
       - "8000:8000"
+    environment:
+      - PORT=8000
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
     depends_on:
       - redis
-    environment:
-      - REDIS_URL=redis://redis:6379/0
-      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
