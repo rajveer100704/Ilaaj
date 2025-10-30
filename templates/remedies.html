@@ -2,15 +2,15 @@
 {% block content %}
 <div class="glass-card p-6 max-w-3xl mx-auto">
   <h2 class="text-2xl font-semibold mb-3">Remedies</h2>
-  <p class="text-slate-600 mb-4">View AI-generated remedies. You can open this page from Diagnose (it will auto-fetch if `?disease=` is present).</p>
+  <p class="text-slate-600 mb-4">View AI-generated remedies. Open this page from Diagnose (it will auto-fetch if `?disease=` is present).</p>
 
   <div class="flex gap-3 mb-4">
-    <input id="disease" placeholder="Type disease name (or open via Diagnose)" class="flex-1 p-3 border rounded" />
+    <input id="disease" placeholder="Type disease name (e.g., Influenza)" class="flex-1 p-3 border rounded" />
     <button id="fetch-remedies" class="px-4 py-2 bg-sky-600 text-white rounded">Get Remedies</button>
   </div>
 
   <div id="remedies-area" class="space-y-4 text-slate-700">
-    <div class="text-slate-500">Enter a disease or click "View Remedies" from Diagnose.</div>
+    <div class="text-slate-500">Enter a disease or open this page from the Diagnose results.</div>
   </div>
 </div>
 
