@@ -1,17 +1,20 @@
+# Use official Python image
 FROM python:3.11-slim
 
+# Set work directory
 WORKDIR /app
 
-# system deps for some packages (if needed)
-RUN apt-get update && apt-get install -y build-essential libssl-dev libffi-dev && rm -rf /var/lib/apt/lists/*
+# Copy dependency files
+COPY requirements.txt .
 
-COPY requirements.txt /app/
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app
+# Copy project files
+COPY . .
 
+# Expose FastAPI port
 EXPOSE 8000
 
-ENV PYTHONUNBUFFERED=1
-
+# Command to run app with uvicorn
 CMD ["uvicorn", "run:app", "--host", "0.0.0.0", "--port", "8000"]
