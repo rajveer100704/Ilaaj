@@ -1,95 +1,61 @@
 {% extends "base.html" %}
+
 {% block content %}
-<div class="grid md:grid-cols-3 gap-6">
-  <div class="glass-card p-6">
-    <h1 class="text-2xl font-semibold mb-4">Welcome to Ilaaj</h1>
-    <div class="w-full rounded-lg bg-white p-6 flex items-center justify-center">
-      <img src="/static/images/doctoricon.png" alt="doctor" class="w-28 h-28"/>
+<section class="cards-row">
+  <!-- LEFT: Welcome card -->
+  <article class="card welcome-card">
+    <h1>Welcome to Ilaaj</h1>
+    <div class="hero-icon">
+      <img src="/static/images/doctoricon.png" alt="logo" />
     </div>
-    <p class="text-slate-600 mt-4">Your AI-powered health diagnosis assistant</p>
-    <div class="w-full flex flex-col gap-3 mt-4">
-      <a href="/diagnose" class="block text-center px-4 py-3 bg-sky-600 text-white rounded-lg shadow">Start Diagnosis</a>
-      <a href="/remedies" class="block text-center px-4 py-3 border rounded-lg mt-2">View Remedies</a>
+    <p class="muted">Your AI-powered health diagnosis assistant</p>
+    <div class="cta-row">
+      <button id="start-diagnosis" class="btn-primary">Start Diagnosis</button>
     </div>
-    <p class="text-xs muted mt-3">
-      Disclaimer: Ilaaj is informational only — not a replacement for professional medical advice.
-    </p>
-  </div>
+    <p class="disclaimer">Disclaimer: Ilaaj is informational only — not a replacement for professional medical advice.</p>
+  </article>
 
-  <div class="glass-card p-6">
-    <h2 class="text-lg font-semibold mb-2">Diagnose</h2>
-    <p class="text-sm muted mb-4">Enter symptoms (comma separated) and see the top matches.</p>
-    <div class="bg-white p-4 rounded-lg">
-      <input id="idx-symptoms" class="w-full border p-2 rounded mb-3" placeholder="e.g., fever, cough" />
-      <div class="flex gap-3">
-        <button id="idx-diagnose" class="px-4 py-2 bg-sky-600 text-white rounded">Diagnose</button>
-        <a href="/diagnose" class="px-4 py-2 border rounded">Open Full</a>
+  <!-- CENTER: Diagnose card -->
+  <article class="card diagnose-card" id="diagnose">
+    <h2>Diagnose</h2>
+    <p class="muted">Enter symptoms (comma separated) and click <strong>Diagnose</strong> (top 3) or <strong>Open Full</strong> (top 10).</p>
+
+    <div class="form-row">
+      <textarea id="symptoms" placeholder="e.g. fever, cough, sore throat" rows="2"></textarea>
+    </div>
+
+    <div class="controls-row">
+      <button id="diagnose-btn" class="btn-primary">Diagnose</button>
+      <button id="openfull-btn" class="btn-outline">Open Full</button>
+    </div>
+
+    <div id="diagnose-status" class="status muted"></div>
+
+    <div id="results" class="results hidden">
+      <table id="results-table" class="results-table" aria-describedby="diagnose-status">
+        <thead><tr><th>Disease</th><th>Confidence</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div id="remedy-panel" class="remedy-panel hidden">
+      <div class="remedy-header">
+        <h3 id="remedy-title"></h3>
+        <button id="remedy-close" class="btn-small">Close</button>
       </div>
-      <pre id="idx-preview" class="mt-4 text-sm text-slate-600 whitespace-pre-wrap"></pre>
+      <div id="remedy-body" class="remedy-body"></div>
     </div>
-  </div>
+  </article>
 
-  <div class="glass-card p-6">
-    <h2 class="text-lg font-semibold mb-2">Remedies</h2>
-    <p class="text-sm muted mb-4">Get remedies for the detected conditions.</p>
-    <div class="bg-white p-4 rounded-lg">
-      <input id="idx-disease" class="w-full border p-2 rounded mb-3" placeholder="Type disease (e.g., Influenza)" />
-      <div class="flex gap-3">
-        <button id="idx-remedies" class="px-4 py-2 border rounded">Get Remedies</button>
-        <a href="/remedies" class="px-4 py-2 border rounded">Open Full</a>
-      </div>
-      <div id="idx-rem-res" class="mt-4 text-sm text-slate-600"></div>
-    </div>
-  </div>
-</div>
-
-<script>
-document.getElementById('idx-diagnose').addEventListener('click', async () => {
-  const s = document.getElementById('idx-symptoms').value.trim();
-  if(!s) return;
-  try {
-    const res = await fetch('/api/diagnose', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({symptoms:s})});
-    const j = await res.json();
-    const preview = document.getElementById('idx-preview');
-    if(j.results && j.results.length) {
-      // build clean lines and ensure any literal backslash-n sequences are converted to real newlines
-      const lines = j.results.slice(0,3).map(r => {
-        // ensure r.disease is a string and r.score a number
-        const name = String(r.disease || 'Unknown');
-        const score = (typeof r.score === 'number') ? r.score : parseFloat(r.score || 0);
-        return `${name} — ${score}%`;
-      });
-      preview.innerText = lines.join('\n');
-    } else {
-      preview.innerText = 'No matches found.';
-    }
-  } catch (err) {
-    console.error(err);
-    document.getElementById('idx-preview').innerText = 'Diagnosis failed. See console.';
-  }
-});
-
-document.getElementById('idx-remedies').addEventListener('click', async () => {
-  const d = document.getElementById('idx-disease').value.trim();
-  if(!d) return;
-  try {
-    const res = await fetch('/api/remedies', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({disease:d})});
-    const j = await res.json();
-    const out = document.getElementById('idx-rem-res');
-    if(j.remedies && j.remedies.length) {
-      out.innerText = j.remedies.map(x => {
-        const rems = Array.isArray(x.remedies) ? x.remedies.join('; ') : String(x.remedies || '');
-        return `${x.disease}: ${rems}`;
-      }).join('\n\n');
-    } else if (j.error) {
-      out.innerText = 'Error fetching remedies: ' + j.error;
-    } else {
-      out.innerText = 'No remedies found.';
-    }
-  } catch (err) {
-    console.error(err);
-    document.getElementById('idx-rem-res').innerText = 'Failed to fetch remedies.';
-  }
-});
-</script>
+  <!-- RIGHT: Optional info card (kept minimal) -->
+  <article class="card info-card">
+    <h2>How it works</h2>
+    <p class="muted">We send the symptoms to the AI backend (Gemini) and return likely conditions and safe, non-prescriptive remedies. Always consult a professional for medical care.</p>
+    <ul class="bullets">
+      <li>Diagnose - top 3 quick results</li>
+      <li>Open Full - top 10 detailed results</li>
+      <li>View Remedies - per-condition suggestions</li>
+    </ul>
+  </article>
+</section>
 {% endblock %}
