@@ -1,39 +1,18 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ilaaj — Smart AI Health Assistant</title>
-  <link rel="stylesheet" href="/static/css/styles.css" />
-  <link rel="icon" href="/static/images/doctoricon.png" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ilaaj - AI Health Diagnosis</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <div class="logo">
-        <img src="/static/images/doctoricon.png" alt="Ilaaj logo" />
-        <div class="brand">
-          <div class="brand-title">Ilaaj</div>
-          <div class="brand-sub">Smart AI Health Assistant</div>
-        </div>
-      </div>
-
-      <nav class="nav">
-        <a href="#home">Home</a>
-        <a href="#diagnose">Diagnose</a>
-        <a href="#about">About</a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="container main-grid">
-    {% block content %}{% endblock %}
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">© 2025 Ilaaj — For learning & prototyping only</div>
-  </footer>
-
-  <script src="/static/js/diagnose.js" defer></script>
+    <header>
+        <img src="{{ url_for('static', path='images/doctoricon.png') }}" alt="Doctor Icon" class="icon">
+        <h1>Ilaaj: AI-Based Diagnosis Assistant</h1>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
 </body>
 </html>
