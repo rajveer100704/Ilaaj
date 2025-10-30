@@ -1,57 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="cards-row">
-  <article class="card welcome-card">
-    <h1>Welcome to Ilaaj</h1>
-    <div class="hero-icon">
-      <img src="/static/images/doctoricon.png" alt="logo" />
-    </div>
-    <p class="muted">Your AI-powered health diagnosis assistant</p>
-    <div class="cta-row">
-      <button id="start-diagnosis" class="btn-primary">Start Diagnosis</button>
-    </div>
-    <p class="disclaimer">Disclaimer: Ilaaj is informational only — not a replacement for professional medical advice.</p>
-  </article>
-
-  <article class="card diagnose-card" id="diagnose">
-    <h2>Diagnose</h2>
-    <p class="muted">Enter symptoms (comma separated) and click <strong>Diagnose</strong> (top 3) or <strong>Open Full</strong> (top 10).</p>
-
-    <div class="form-row">
-      <textarea id="symptoms" placeholder="e.g. fever, cough, sore throat" rows="2"></textarea>
-    </div>
-
-    <div class="controls-row">
-      <button id="diagnose-btn" class="btn-primary">Diagnose</button>
-      <button id="openfull-btn" class="btn-outline">Open Full</button>
-    </div>
-
-    <div id="diagnose-status" class="status muted"></div>
-
-    <div id="results" class="results hidden">
-      <table id="results-table" class="results-table" aria-describedby="diagnose-status">
-        <thead><tr><th>Disease</th><th>Confidence</th><th></th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <div id="remedy-panel" class="remedy-panel hidden">
-      <div class="remedy-header">
-        <h3 id="remedy-title"></h3>
-        <button id="remedy-close" class="btn-small">Close</button>
-      </div>
-      <div id="remedy-body" class="remedy-body"></div>
-    </div>
-  </article>
-
-  <article class="card info-card">
-    <h2>How it works</h2>
-    <p class="muted">We use the Gemini model to estimate likely conditions from your symptoms and provide safe, general remedies. Always confirm with a healthcare professional.</p>
-    <ul class="bullets">
-      <li>Diagnose — quick top 3 suggestions</li>
-      <li>Open Full — more detailed top 10</li>
-      <li>View remedies per condition (safe, non-prescriptive)</li>
-    </ul>
-  </article>
-</section>
+<div class="landing">
+    <h2>Welcome to Ilaaj</h2>
+    <p>Describe your symptoms and get instant AI-powered diagnosis & remedies.</p>
+    <button onclick="window.location.href='/diagnose'" class="start-btn">Start Diagnosis</button>
+</div>
 {% endblock %}
