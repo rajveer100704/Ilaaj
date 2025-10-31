@@ -1,102 +1,51 @@
-import os
-import json
-import asyncio
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
+import os
 import google.generativeai as genai
 
-# ------------------------------------------------------------
-# Load environment variables
-# ------------------------------------------------------------
-load_dotenv()
+app = FastAPI()
 
-API_KEY = os.getenv("GEMINI_API_KEY")
-PORT = int(os.getenv("PORT", 8000))
-TIMEOUT = int(os.getenv("GEMINI_TIMEOUT", 10))
-
-if not API_KEY or not API_KEY.startswith("AI"):
-    raise RuntimeError("❌ GEMINI_API_KEY not found or invalid in .env file")
-
-# Configure Gemini
-genai.configure(api_key=API_KEY)
-
-# ------------------------------------------------------------
-# Initialize FastAPI app
-# ------------------------------------------------------------
-app = FastAPI(title="Smart Health Diagnose API", version="1.0")
-
+# Allow frontend requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # allow frontend access
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ------------------------------------------------------------
-# Utility: call Gemini safely
-# ------------------------------------------------------------
-async def call_gemini(prompt: str, timeout: float = TIMEOUT) -> str:
-    """Run Gemini generation safely in async context."""
-    loop = asyncio.get_running_loop()
-
-    def sync_call():
-        try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
-            response = model.generate_content(prompt)
-            return response.text or ""
-        except Exception as e:
-            print("❌ Gemini API call failed:", e)
-            raise HTTPException(status_code=500, detail=f"Gemini error: {str(e)}")
-
-    try:
-        return await asyncio.wait_for(loop.run_in_executor(None, sync_call), timeout=timeout)
-    except asyncio.TimeoutError:
-        raise HTTPException(status_code=504, detail="Gemini API request timed out")
-
-# ------------------------------------------------------------
-# Routes
-# ------------------------------------------------------------
 @app.get("/")
-def home():
+async def root():
     return {"message": "🚀 Smart Health Diagnose API running!"}
 
 @app.post("/api/diagnose")
 async def diagnose(request: Request):
     data = await request.json()
-    symptoms = data.get("symptoms", "").strip()
-    if not symptoms:
-        raise HTTPException(status_code=400, detail="No symptoms provided")
+    symptoms = data.get("symptoms", "")
+    limit = data.get("limit", 3)  # Top 3 by default
 
-    prompt = f"""
-    You are an AI health assistant.
-    Given these symptoms: {symptoms}.
-    Return the top 3 most likely diseases with short descriptions and remedies.
-    Respond strictly as JSON:
-    {{
-      "results": [
-        {{"disease": "...", "description": "...", "remedy": "..."}},
-        ...
-      ]
-    }}
-    """
-
-    raw_response = await call_gemini(prompt)
     try:
-        # Try to parse JSON; if text is wrapped, extract JSON part
-        json_start = raw_response.find("{")
-        json_end = raw_response.rfind("}")
-        cleaned = raw_response[json_start:json_end+1]
-        parsed = json.loads(cleaned)
-        return parsed
-    except Exception as e:
-        print("⚠️ JSON parsing failed, returning raw text:", e)
-        return {"raw_output": raw_response}
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+        model = genai.GenerativeModel("gemini-1.5-flash")
 
-# ------------------------------------------------------------
-# Run server
-# ------------------------------------------------------------
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=PORT)
+        prompt = f"""
+        You are a medical AI assistant. Based on the following symptoms:
+        {symptoms}
+        List the top {limit} possible diseases with confidence percentage
+        and one-line description. Return in JSON format:
+        [
+          {{
+            "disease": "Name",
+            "confidence": "85%",
+            "description": "Short info",
+            "remedies": ["remedy1", "remedy2", "remedy3", "remedy4", "remedy5"]
+          }}
+        ]
+        """
+
+        response = model.generate_content(prompt)
+        return {"results": eval(response.text)}
+
+    except Exception as e:
+        print("❌ Gemini API call failed:", e)
+        return {"error": str(e)}
