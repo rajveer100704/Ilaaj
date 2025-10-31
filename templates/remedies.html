@@ -1,1 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 style="text-align:center;margin-top:18px;">Remedies</h2>
+
+<div class="remedies-area">
+  <div id="rem-title" class="rem-title"></div>
+  <div id="rem-list" class="rem-list">
+    <!-- Remedies will render here -->
+  </div>
+</div>
+
+<script>
+  // read ?disease=...
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    const d = params.get('disease') || '';
+    if (!d) {
+      document.getElementById('rem-list').innerHTML = '<div class="notice">No disease selected.</div>';
+      return;
+    }
+    document.getElementById('rem-title').textContent = d;
+    // fetch via API
+    fetch('/api/remedies', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ disease: d })
+    }).then(r => r.json()).then(js => {
+      const area = document.getElementById('rem-list');
+      if (js.remedies && js.remedies.length) {
+        const obj = js.remedies[0];
+        if (obj.remedies && obj.remedies.length) {
+          area.innerHTML = '<ol class="rem-ol">' + obj.remedies.map(it => '<li>' + it + '</li>').join('') + '</ol>';
+        } else {
+          area.innerHTML = '<div class="notice">No remedies found.</div>';
+        }
+      } else if (js.error) {
+        area.innerHTML = `<div class="notice">Error: ${js.error}</div>`;
+      } else {
+        area.innerHTML = '<div class="notice">No data.</div>';
+      }
+    }).catch(e => {
+      document.getElementById('rem-list').innerHTML = '<div class="notice">Failed to fetch remedies.</div>';
+    });
+  })();
+</script>
+{% endblock %}
 
