@@ -1,33 +1,18 @@
-{% extends "base.html" %}
-{% block content %}
-<section class="hero-cards">
-  <div class="card">
-    <h2>Welcome to Ilaaj</h2>
-    <img src="/static/images/doctoricon.png" class="biglogo" />
-    <p>Your AI-powered health diagnosis assistant</p>
-    <a href="/diagnose" class="btn primary">Start Diagnosis</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ilaaj - Smart AI Health Assistant</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 Ilaaj - Smart AI Health Assistant</h1>
+    <p>
+      Diagnose your health conditions intelligently. Enter your symptoms, and Ilaaj will suggest possible diseases along with remedies — powered by Gemini AI.
+    </p>
+    <button onclick="window.location.href='/templates/diagnose.html'">Start Diagnose</button>
   </div>
-
-  <div class="card">
-    <h2>Diagnose</h2>
-    <p>Enter symptoms (comma separated) and see the top matches.</p>
-    <input id="index-symptoms" class="input" placeholder="e.g. fever, cough" />
-    <div style="margin-top:12px;">
-      <button class="btn primary" id="index-diagnose">Diagnose</button>
-      <a class="btn" href="/diagnose" style="margin-left:8px;">Open Full</a>
-    </div>
-  </div>
-</section>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById('index-diagnose');
-  btn?.addEventListener('click', () => {
-    const v = document.getElementById('index-symptoms').value || '';
-    if (!v.trim()) return alert('Type some symptoms (comma separated).');
-    // navigate to diagnose page with symptoms prefilled
-    window.location.href = '/diagnose?prefill=' + encodeURIComponent(v);
-  });
-});
-</script>
-{% endblock %}
+</body>
+</html>
