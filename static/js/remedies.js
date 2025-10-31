@@ -1,28 +1,36 @@
-const params = new URLSearchParams(window.location.search);
-const disease = params.get("disease");
-const remediesDiv = document.getElementById("remedies");
+const REMEDY_API = "http://127.0.0.1:8000/api/remedies";
 
 async function loadRemedies() {
-  remediesDiv.innerHTML = "Loading remedies...";
+  const urlParams = new URLSearchParams(window.location.search);
+  const disease = decodeURIComponent(urlParams.get("disease"));
+  document.getElementById("diseaseName").innerText = disease;
+
+  const remedyList = document.getElementById("remedyList");
+  remedyList.innerHTML = "<p>⏳ Fetching remedies...</p>";
+
   try {
-    const res = await fetch("http://localhost:8000/api/diagnose", {
+    const response = await fetch(REMEDY_API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ symptoms: disease, limit: 1 }),
+      body: JSON.stringify({ disease }),
     });
-    const data = await res.json();
-    if (data.results && data.results[0]) {
-      const rems = data.results[0].remedies;
-      remediesDiv.innerHTML = `
-        <h2>Top Remedies for ${disease}</h2>
-        <ul>${rems.map(r => `<li>${r}</li>`).join("")}</ul>
-      `;
-    } else {
-      remediesDiv.innerHTML = "No remedies found.";
+
+    if (!response.ok) throw new Error("Failed to fetch remedies");
+    const data = await response.json();
+
+    if (!data.remedies) {
+      remedyList.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      return;
     }
+
+    remedyList.innerHTML = `
+      <ul>
+        ${data.remedies.map((r) => `<li>${r}</li>`).join("")}
+      </ul>
+    `;
   } catch (err) {
-    remediesDiv.innerHTML = `<p style="color:red">Gemini API error</p>`;
+    remedyList.innerHTML = `<p class="error">❌ ${err.message}</p>`;
   }
 }
 
-loadRemedies();
+window.onload = loadRemedies;
