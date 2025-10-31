@@ -1,30 +1,23 @@
-{% extends "base.html" %}
-{% block content %}
-<h2 style="text-align:center;margin-top:18px;">AI Diagnosis Assistant</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnose | Ilaaj</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/diagnose.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <h1>🩺 Diagnose Symptoms</h1>
+    <textarea id="symptoms" placeholder="Enter symptoms separated by commas (e.g., fever, cough, fatigue)"></textarea>
 
-<div class="diagnose-area">
-  <textarea id="symptoms" class="text-area" placeholder="Enter symptoms, comma separated..."></textarea>
+    <div class="buttons">
+      <button id="diagnoseBtn">Diagnose (Top 3)</button>
+      <button id="viewFullBtn">View Full (Top 10)</button>
+    </div>
 
-  <div class="actions">
-    <button id="diagnose-btn" class="btn primary">Diagnose (Top 3)</button>
-    <button id="openfull-btn" class="btn">Open Full (Top 10)</button>
+    <div id="results"></div>
   </div>
-
-  <div id="status" class="status"></div>
-
-  <div id="results" class="results hidden">
-    <!-- results render here -->
-  </div>
-</div>
-<script>
-  // allow prefill via ?prefill=
-  (function(){
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('prefill')) {
-      document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById('symptoms').value = decodeURIComponent(params.get('prefill'));
-      });
-    }
-  })();
-</script>
-{% endblock %}
+</body>
+</html>
