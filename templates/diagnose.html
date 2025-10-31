@@ -1,24 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="diagnose-section">
-    <h2>AI Diagnosis Assistant</h2>
-    <textarea id="symptoms" placeholder="Enter your symptoms (e.g. fever, cough, fatigue)"></textarea>
-    <div class="btn-group">
-        <button id="diagnose-btn">Diagnose</button>
-        <button id="openfull-btn">Open Full</button>
-    </div>
-    <div id="results"></div>
-</div>
+<h2 style="text-align:center;margin-top:18px;">AI Diagnosis Assistant</h2>
 
-<!-- Modal for Remedies -->
-<div id="remediesModal" class="modal">
-  <div class="modal-content">
-    <span id="closeModal">&times;</span>
-    <h3>Remedies</h3>
-    <div id="remediesContent"></div>
+<div class="diagnose-area">
+  <textarea id="symptoms" class="text-area" placeholder="Enter symptoms, comma separated..."></textarea>
+
+  <div class="actions">
+    <button id="diagnose-btn" class="btn primary">Diagnose (Top 3)</button>
+    <button id="openfull-btn" class="btn">Open Full (Top 10)</button>
+  </div>
+
+  <div id="status" class="status"></div>
+
+  <div id="results" class="results hidden">
+    <!-- results render here -->
   </div>
 </div>
-
-<script src="{{ url_for('static', path='js/diagnose.js') }}"></script>
+<script>
+  // allow prefill via ?prefill=
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('prefill')) {
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById('symptoms').value = decodeURIComponent(params.get('prefill'));
+      });
+    }
+  })();
+</script>
 {% endblock %}
-
