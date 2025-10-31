@@ -1,43 +1,49 @@
-document.getElementById("diagnoseBtn").addEventListener("click", async () => {
-  await fetchDiseases(3);
-});
+const API_URL = "http://127.0.0.1:8000/api/diagnose";
 
-document.getElementById("openFullBtn").addEventListener("click", async () => {
-  await fetchDiseases(10);
-});
-
-async function fetchDiseases(limit) {
-  const symptoms = document.getElementById("symptomInput").value;
+async function fetchDiagnosis(limit) {
+  const symptoms = document.getElementById("symptoms").value.trim();
   const resultDiv = document.getElementById("results");
-  resultDiv.innerHTML = "Diagnosing...";
+  resultDiv.innerHTML = "<p>⏳ Diagnosing...</p>";
 
   try {
-    const res = await fetch("http://localhost:8000/api/diagnose", {
+    const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ symptoms, limit }),
     });
-    const data = await res.json();
 
-    if (data.error) {
-      resultDiv.innerHTML = `<p style="color:red">Error: ${data.error}</p>`;
+    if (!response.ok) throw new Error("Failed to fetch diagnosis");
+    const data = await response.json();
+
+    if (!data.results) {
+      resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
       return;
     }
 
-    let html = "<h3>Top Results</h3>";
-    data.results.forEach((d, i) => {
-      html += `
-        <div class="disease-card">
-          <h4>${i + 1}. ${d.disease} (${d.confidence})</h4>
+    resultDiv.innerHTML = `
+      <h2>🧩 Possible Diseases (${data.results.length})</h2>
+      ${data.results
+        .map(
+          (d) => `
+        <div class="card">
+          <h3>${d.disease}</h3>
+          <p><strong>Confidence:</strong> ${d.confidence}</p>
           <p>${d.description}</p>
-          <a href="remedies.html?disease=${encodeURIComponent(d.disease)}" class="btn">View Remedies</a>
-        </div>
-      `;
-    });
-    resultDiv.innerHTML = html;
-
+          <button onclick="viewRemedies('${encodeURIComponent(d.disease)}')">
+            View Remedies
+          </button>
+        </div>`
+        )
+        .join("")}
+    `;
   } catch (err) {
-    resultDiv.innerHTML = `<p style="color:red">Error: Gemini API unreachable</p>`;
-    console.error(err);
+    resultDiv.innerHTML = `<p class="error">❌ ${err.message}</p>`;
   }
 }
+
+function viewRemedies(disease) {
+  window.location.href = `/templates/remedies.html?disease=${disease}`;
+}
+
+document.getElementById("diagnoseBtn").addEventListener("click", () => fetchDiagnosis(3));
+document.getElementById("viewFullBtn").addEventListener("click", () => fetchDiagnosis(10));
