@@ -1,8 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="landing">
+<section class="hero-cards">
+  <div class="card">
     <h2>Welcome to Ilaaj</h2>
-    <p>Describe your symptoms and get instant AI-powered diagnosis & remedies.</p>
-    <button onclick="window.location.href='/diagnose'" class="start-btn">Start Diagnosis</button>
-</div>
+    <img src="/static/images/doctoricon.png" class="biglogo" />
+    <p>Your AI-powered health diagnosis assistant</p>
+    <a href="/diagnose" class="btn primary">Start Diagnosis</a>
+  </div>
+
+  <div class="card">
+    <h2>Diagnose</h2>
+    <p>Enter symptoms (comma separated) and see the top matches.</p>
+    <input id="index-symptoms" class="input" placeholder="e.g. fever, cough" />
+    <div style="margin-top:12px;">
+      <button class="btn primary" id="index-diagnose">Diagnose</button>
+      <a class="btn" href="/diagnose" style="margin-left:8px;">Open Full</a>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById('index-diagnose');
+  btn?.addEventListener('click', () => {
+    const v = document.getElementById('index-symptoms').value || '';
+    if (!v.trim()) return alert('Type some symptoms (comma separated).');
+    // navigate to diagnose page with symptoms prefilled
+    window.location.href = '/diagnose?prefill=' + encodeURIComponent(v);
+  });
+});
+</script>
 {% endblock %}
