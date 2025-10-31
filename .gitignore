@@ -1,25 +1,5 @@
-# Python
+venv/
+.env
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-*.db
-*.sqlite3
-
-# Environment
-.env
-venv/
-.venv/
-
-# Docker
-*.log
-Dockerfile
-docker-compose.yml
-
-# IDE
-.vscode/
-.idea/
-
-# OS
 .DS_Store
-Thumbs.db
