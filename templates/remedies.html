@@ -1,17 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Remedies | Ilaaj</title>
-  <link rel="stylesheet" href="/static/style.css">
-  <script src="/static/remedies.js" defer></script>
-</head>
-<body>
-  <div class="container">
-    <h1>💊 Remedies for <span id="diseaseName"></span></h1>
-    <div id="remedyList"></div>
-    <button onclick="window.location.href='/templates/diagnose.html'">🔙 Back to Diagnose</button>
+{% extends "base.html" %}
+{% block content %}
+  <h2 class="page-title">Remedies</h2>
+
+  <div class="panel">
+    <label for="disease-input">Disease</label>
+    <input id="disease-input" type="text" placeholder="Type disease name or open via Diagnose" />
+
+    <div class="actions">
+      <button id="fetch-remedies" class="btn primary">Get Remedies</button>
+    </div>
+
+    <div id="remedies-area" class="results"></div>
   </div>
-</body>
-</html>
+
+  <script>
+    // auto-read query param ?disease=
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("disease")) {
+      const d = params.get("disease");
+      document.addEventListener("DOMContentLoaded", () => {
+        const inp = document.getElementById("disease-input");
+        inp.value = decodeURIComponent(d);
+        document.getElementById("fetch-remedies").click();
+      });
+    }
+  </script>
+{% endblock %}
