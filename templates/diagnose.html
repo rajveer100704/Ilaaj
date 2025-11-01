@@ -1,23 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Diagnose | Ilaaj</title>
-  <link rel="stylesheet" href="/static/style.css">
-  <script src="/static/diagnose.js" defer></script>
-</head>
-<body>
-  <div class="container">
-    <h1>🩺 Diagnose Symptoms</h1>
-    <textarea id="symptoms" placeholder="Enter symptoms separated by commas (e.g., fever, cough, fatigue)"></textarea>
+{% extends "base.html" %}
+{% block content %}
+  <h2 class="page-title">AI Diagnosis Assistant</h2>
 
-    <div class="buttons">
-      <button id="diagnoseBtn">Diagnose (Top 3)</button>
-      <button id="viewFullBtn">View Full (Top 10)</button>
+  <div class="panel">
+    <textarea id="symptoms" placeholder="Enter symptoms (comma separated)" rows="6"></textarea>
+
+    <div class="actions">
+      <button id="btn-diagnose" class="btn primary">Diagnose (Top 3)</button>
+      <button id="btn-full" class="btn">Open Full (Top 10)</button>
     </div>
 
-    <div id="results"></div>
+    <div id="status" class="status"></div>
+
+    <div id="results" class="results hidden"></div>
   </div>
-</body>
-</html>
+{% endblock %}
