@@ -1,36 +1,59 @@
-const REMEDY_API = "http://127.0.0.1:8000/api/remedies";
+// static/js/remedies.js
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("fetch-remedies");
+  const inp = document.getElementById("disease-input");
+  const area = document.getElementById("remedies-area");
 
-async function loadRemedies() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const disease = decodeURIComponent(urlParams.get("disease"));
-  document.getElementById("diseaseName").innerText = disease;
+  function showAreaHtml(html){
+    area.innerHTML = html;
+  }
 
-  const remedyList = document.getElementById("remedyList");
-  remedyList.innerHTML = "<p>⏳ Fetching remedies...</p>";
+  async function fetchRemedies(disease){
+    showAreaHtml("<div class='result-item'>Loading remedies…</div>");
+    try {
+      const res = await fetch("/api/remedies", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({disease: disease})
+      });
+      const data = await res.json();
+      if (!res.ok){
+        showAreaHtml(`<div class='result-item'>Error: ${data.error || JSON.stringify(data)}</div>`);
+        return;
+      }
+      const arr = data.remedies || [];
+      if (!arr.length){
+        showAreaHtml(`<div class='result-item'>No remedies found.</div>`);
+        return;
+      }
+      // show first (should be only one)
+      const r = arr[0];
+      const list = (r.remedies || []).map(s=>`<li>${escapeHtml(s)}</li>`).join("");
+      const html = `
+        <div class="result-item">
+          <div class="result-title">${escapeHtml(r.disease)}</div>
+          <div class="small-desc">Source: ${escapeHtml(r.source||"gemini")}</div>
+          ${list ? `<ul style="margin-top:10px">${list}</ul>` : `<div class="small-desc" style="margin-top:8px">No remedies found.</div>`}
+        </div>
+      `;
+      showAreaHtml(html);
+    } catch (e){
+      console.error(e);
+      showAreaHtml("<div class='result-item'>Failed to fetch remedies. See console.</div>");
+    }
+  }
 
-  try {
-    const response = await fetch(REMEDY_API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ disease }),
-    });
+  function escapeHtml(s){
+    if (!s) return "";
+    return s.replace(/[&<>"']/g, (c)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]);
+  }
 
-    if (!response.ok) throw new Error("Failed to fetch remedies");
-    const data = await response.json();
-
-    if (!data.remedies) {
-      remedyList.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+  btn.addEventListener("click", ()=>{
+    const d = inp.value.trim();
+    if (!d){
+      showAreaHtml("<div class='result-item'>Please type a disease name</div>");
       return;
     }
-
-    remedyList.innerHTML = `
-      <ul>
-        ${data.remedies.map((r) => `<li>${r}</li>`).join("")}
-      </ul>
-    `;
-  } catch (err) {
-    remedyList.innerHTML = `<p class="error">❌ ${err.message}</p>`;
-  }
-}
-
-window.onload = loadRemedies;
+    fetchRemedies(d);
+  });
+});
